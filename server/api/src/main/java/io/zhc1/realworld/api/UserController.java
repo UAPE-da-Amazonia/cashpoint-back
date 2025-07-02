@@ -1,9 +1,5 @@
 package io.zhc1.realworld.api;
 
-import java.util.Map;
-
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,8 +7,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,7 +33,8 @@ class UserController {
     private final AuthTokenProvider bearerTokenProvider;
 
     @PostMapping("/api/users")
-    public ModelAndView signup(HttpServletRequest httpServletRequest, @RequestBody SignupRequest request) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public UsersResponse signup(@RequestBody SignupRequest request) {
         BusinessUnit businessUnit = businessUnitService
                 .findById(request.user().businessUnitId())
                 .orElseThrow(() -> new RuntimeException("BusinessUnit não encontrada"));
@@ -54,14 +49,10 @@ class UserController {
                 businessUnit,
                 role);
 
-        userService.signup(userRegistry);
+        User user = userService.signup(userRegistry);
+        String token = bearerTokenProvider.createAuthToken(user);
 
-        // Redirect to login API to automatically login when signup is complete
-        var loginRequest =
-                new LoginUserRequest(request.user().email(), request.user().password());
-        httpServletRequest.setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
-
-        return new ModelAndView("redirect:" + LOGIN_URL, "user", Map.of("user", loginRequest));
+        return UsersResponse.from(user, token);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

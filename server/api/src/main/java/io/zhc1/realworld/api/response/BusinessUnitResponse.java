@@ -13,7 +13,9 @@ public record BusinessUnitResponse(List<BusinessUnitData> businessUnits) {
                     businessUnit.getId(),
                     businessUnit.getName(),
                     businessUnit.getDescription(),
-                    businessUnit.getCreatedAt().toString(),
+                    businessUnit.getCreatedAt() != null
+                            ? businessUnit.getCreatedAt().toString()
+                            : null,
                     businessUnit.getUpdatedAt() != null
                             ? businessUnit.getUpdatedAt().toString()
                             : null);

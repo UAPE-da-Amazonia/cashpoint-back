@@ -12,7 +12,7 @@ spring:
     virtual:
       enabled: true
   datasource:
-    url: jdbc:mysql://localhost:3306/wai?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/wai
     username: admin
     password: Info@1234
     driver-class-name: com.mysql.cj.jdbc.Driver

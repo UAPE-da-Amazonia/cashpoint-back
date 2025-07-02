@@ -15,13 +15,16 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 @DisplayName("User - Identity, Authentication, and Profile Management Operations")
 class UserTest {
+    private static final BusinessUnit DEFAULT_BUSINESS_UNIT = new BusinessUnit("Test Unit");
+    private static final UserRole DEFAULT_ROLE = UserRole.USER;
+
     @ParameterizedTest
     @CsvSource({"email, true", "unknown email, false"})
     @DisplayName(
             "When comparing email with equalsEmail method, then should return true for matching email and false otherwise")
     void whenComparingEmail_thenShouldReturnCorrectResult(String email, boolean expected) {
         // given
-        User sut = new User("email", "username", "password");
+        User sut = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
 
         // when
         boolean actual = sut.equalsEmail(email);
@@ -36,7 +39,7 @@ class UserTest {
             "When comparing username with equalsUsername method, then should return true for matching username and false otherwise")
     void whenComparingUsername_thenShouldReturnCorrectResult(String username, boolean expected) {
         // given
-        User sut = new User("email", "username", "password");
+        User sut = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
 
         // when
         boolean actual = sut.equalsUsername(username);
@@ -49,7 +52,7 @@ class UserTest {
     @DisplayName("When setting a new email, then email should be updated")
     void whenSettingNewEmail_thenEmailShouldBeUpdated() {
         // given
-        User sut = new User("email", "username", "password");
+        User sut = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
 
         // when
         sut.setEmail("new email");
@@ -63,7 +66,7 @@ class UserTest {
     @DisplayName("When setting email with null or empty value, then email should not be modified")
     void whenSettingEmailWithNullOrEmptyValue_thenEmailShouldNotBeModified(String email) {
         // given
-        User sut = new User("email", "username", "password");
+        User sut = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
 
         // when
         sut.setEmail(email);
@@ -76,7 +79,7 @@ class UserTest {
     @DisplayName("When setting a new username, then username should be updated")
     void whenSettingNewUsername_thenUsernameShouldBeUpdated() {
         // given
-        User sut = new User("email", "username", "password");
+        User sut = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
 
         // when
         sut.setUsername("new username");
@@ -90,7 +93,7 @@ class UserTest {
     @DisplayName("When setting username with null or empty value, then username should not be modified")
     void whenSettingUsernameWithNullOrEmptyValue_thenUsernameShouldNotBeModified(String username) {
         // given
-        User sut = new User("email", "username", "password");
+        User sut = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
 
         // when
         sut.setUsername(username);
@@ -103,7 +106,7 @@ class UserTest {
     @DisplayName("When encrypting password, then password should be encoded")
     void whenEncryptingPassword_thenPasswordShouldBeEncoded() {
         // given
-        User sut = new User("email", "username", "password");
+        User sut = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
         PasswordEncoder passwordEncoder = new PasswordEncoder() {
             @Override
             public boolean matches(String rawPassword, String encodedPassword) {
@@ -128,7 +131,7 @@ class UserTest {
     @DisplayName("When encrypting password with null or empty value, then password should not be modified")
     void whenEncryptingPasswordWithNullOrEmptyValue_thenPasswordShouldNotBeModified(String rawPassword) {
         // given
-        User sut = new User("email", "username", "password");
+        User sut = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
         PasswordEncoder passwordEncoder = new PasswordEncoder() {
             @Override
             public boolean matches(String rawPassword, String encodedPassword) {
@@ -151,7 +154,7 @@ class UserTest {
     @Test
     @DisplayName("When encrypting password with null encoder, then should throw IllegalArgumentException")
     void whenEncryptingPasswordWithNullEncoder_thenShouldThrowIllegalArgumentException() {
-        User sut = new User("email", "username", "password");
+        User sut = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
         assertThatThrownBy(() -> sut.encryptPassword(null, "new password"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("passwordEncoder is required.");
@@ -161,7 +164,7 @@ class UserTest {
     @DisplayName("When setting a new bio, then bio should be updated")
     void whenSettingNewBio_thenBioShouldBeUpdated() {
         // given
-        User sut = new User("email", "username", "password");
+        User sut = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
 
         // when
         sut.setBio("new bio");
@@ -174,7 +177,7 @@ class UserTest {
     @DisplayName("When setting a new image URL, then image URL should be updated")
     void whenSettingNewImageUrl_thenImageUrlShouldBeUpdated() {
         // given
-        User sut = new User("email", "username", "password");
+        User sut = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
 
         // when
         sut.setImageUrl("new image url");
@@ -188,8 +191,10 @@ class UserTest {
     void whenComparingUsersWithSameId_thenEqualsShouldReturnTrue() {
         // given
         UUID id = UUID.randomUUID();
-        User user1 = new TestUser(id);
-        User user2 = new TestUser(id);
+        User user1 =
+                new TestUser(id, "Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
+        User user2 =
+                new TestUser(id, "Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
 
         // when
         boolean isEquals = user1.equals(user2);
@@ -217,8 +222,10 @@ class UserTest {
     void whenComparingHashCodeOfUsersWithSameId_thenHashCodesShouldBeEqual() {
         // given
         UUID id = UUID.randomUUID();
-        User user1 = new TestUser(id);
-        User user2 = new TestUser(id);
+        User user1 =
+                new TestUser(id, "Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
+        User user2 =
+                new TestUser(id, "Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
 
         // when
         boolean isEquals = user1.hashCode() == user2.hashCode();

@@ -18,10 +18,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import io.zhc1.realworld.model.BusinessUnit;
 import io.zhc1.realworld.model.PasswordEncoder;
 import io.zhc1.realworld.model.User;
 import io.zhc1.realworld.model.UserRegistry;
 import io.zhc1.realworld.model.UserRepository;
+import io.zhc1.realworld.model.UserRole;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("User - User Authentication, Registration, and Profile Management Operations")
@@ -35,12 +37,15 @@ class UserServiceTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
+    private static final BusinessUnit DEFAULT_BUSINESS_UNIT = new BusinessUnit("Test Unit");
+    private static final UserRole DEFAULT_ROLE = UserRole.USER;
+
     @Test
     @DisplayName("Get user by ID should return user when user exists")
     void whenGetUserByIdWithValidId_thenShouldReturnUser() {
         // given
         UUID testUuid = UUID.randomUUID();
-        User testUser = new User("email", "username", "password");
+        User testUser = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
         when(userRepository.findById(testUuid)).thenReturn(Optional.of(testUser));
 
         // when
@@ -66,7 +71,7 @@ class UserServiceTest {
     void whenGetUserByUsernameWithValidUsername_thenShouldReturnUser() {
         // given
         String testUsername = "sampleUsername";
-        User testUser = new User("email", "username", "password");
+        User testUser = new User("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
         when(userRepository.findByUsername(testUsername)).thenReturn(Optional.of(testUser));
 
         // when
@@ -91,7 +96,8 @@ class UserServiceTest {
     @DisplayName("Signup should throw exception when user already exists")
     void whenSignupWithExistingUser_thenShouldThrowException() {
         // given
-        UserRegistry testRegistry = new UserRegistry("email", "username", "password");
+        UserRegistry testRegistry =
+                new UserRegistry("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
         when(userRepository.existsBy(testRegistry.email(), testRegistry.username()))
                 .thenReturn(true);
 
@@ -103,7 +109,8 @@ class UserServiceTest {
     @DisplayName("Signup should succeed with valid user information")
     void whenSignupWithValidUserInfo_thenShouldSucceed() {
         // given
-        UserRegistry testRegistry = new UserRegistry("email", "username", "password");
+        UserRegistry testRegistry =
+                new UserRegistry("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
         when(userRepository.existsBy(testRegistry.email(), testRegistry.username()))
                 .thenReturn(false);
 
@@ -124,7 +131,7 @@ class UserServiceTest {
         // given
         String testEmail = "testEmail";
         String testPassword = "testPassword";
-        User testUser = new User(testEmail, "username", testPassword);
+        User testUser = new User("Test Name", testEmail, "username", testPassword, DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
         when(userRepository.findByEmail(testEmail)).thenReturn(Optional.of(testUser));
         when(passwordEncoder.matches(testPassword, testUser.getPassword())).thenReturn(true);
 
@@ -167,7 +174,8 @@ class UserServiceTest {
         // given
         String testEmail = "testEmail";
         String invalidPassword = "invalidPassword";
-        User testUser = new User(testEmail, "username", "testPassword");
+        User testUser =
+                new User("Test Name", testEmail, "username", "testPassword", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
         when(userRepository.findByEmail(testEmail)).thenReturn(Optional.of(testUser));
         when(passwordEncoder.matches(invalidPassword, testUser.getPassword())).thenReturn(false);
 
@@ -186,15 +194,25 @@ class UserServiceTest {
         String testBio = "testBio";
         String testImageUrl = "testImageUrl";
 
-        User initialUser = new User(testEmail, testUsername, testPassword);
+        User initialUser =
+                new User("Test Name", testEmail, testUsername, testPassword, DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
         initialUser.setBio(testBio);
         initialUser.setImageUrl(testImageUrl);
 
-        when(userRepository.updateUserDetails(any(), any(), any(), any(), any(), any(), any()))
+        when(userRepository.updateUserDetails(any(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
                 .thenReturn(initialUser);
 
         // when
-        User result = sut.updateUserDetails(testUuid, testEmail, testUsername, testPassword, testBio, testImageUrl);
+        User result = sut.updateUserDetails(
+                testUuid,
+                "Test Name",
+                testEmail,
+                testUsername,
+                testPassword,
+                DEFAULT_BUSINESS_UNIT,
+                DEFAULT_ROLE,
+                testBio,
+                testImageUrl);
 
         // then
         assertEquals(initialUser, result);
@@ -207,6 +225,14 @@ class UserServiceTest {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> sut.updateUserDetails(
-                        null, "testEmail", "testUsername", "testPassword", "testBio", "testImageUrl"));
+                        null,
+                        "Test Name",
+                        "testEmail",
+                        "testUsername",
+                        "testPassword",
+                        DEFAULT_BUSINESS_UNIT,
+                        DEFAULT_ROLE,
+                        "testBio",
+                        "testImageUrl"));
     }
 }

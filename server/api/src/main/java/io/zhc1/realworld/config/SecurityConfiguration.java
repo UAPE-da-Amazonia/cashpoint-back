@@ -41,10 +41,7 @@ class SecurityConfiguration {
                 .authorizeHttpRequests(
                         requests -> requests.requestMatchers(HttpMethod.POST, "/api/users", "/api/users/login")
                                 .permitAll()
-                                .requestMatchers(
-                                        HttpMethod.GET,
-                                        "/api/profiles/{username}",
-                                        "/api/businessunit")
+                                .requestMatchers(HttpMethod.GET, "/api/profiles/{username}", "/api/businessunit")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
