@@ -43,7 +43,7 @@ public class User {
     @Column(length = 200, nullable = false)
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "business_unit_id", nullable = false)
     private BusinessUnit businessUnit;
 
