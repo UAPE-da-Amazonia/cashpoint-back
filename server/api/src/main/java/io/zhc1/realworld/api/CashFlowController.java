@@ -28,6 +28,10 @@ import io.zhc1.realworld.model.Category;
 import io.zhc1.realworld.model.PaymentMethod;
 import io.zhc1.realworld.model.Profile;
 import io.zhc1.realworld.model.TransactionType;
+import io.zhc1.realworld.persistence.AccountTypeJpaRepository;
+import io.zhc1.realworld.persistence.CategoryJpaRepository;
+import io.zhc1.realworld.persistence.PaymentMethodJpaRepository;
+import io.zhc1.realworld.persistence.TransactionTypeJpaRepository;
 import io.zhc1.realworld.service.BusinessUnitService;
 import io.zhc1.realworld.service.CashFlowService;
 import io.zhc1.realworld.service.ProfileService;
@@ -38,6 +42,10 @@ class CashFlowController {
     private final CashFlowService cashFlowService;
     private final BusinessUnitService businessUnitService;
     private final ProfileService profileService;
+    private final PaymentMethodJpaRepository paymentMethodJpaRepository;
+    private final TransactionTypeJpaRepository transactionTypeJpaRepository;
+    private final CategoryJpaRepository categoryJpaRepository;
+    private final AccountTypeJpaRepository accountTypeJpaRepository;
 
     /** GET /api/cash-flows - Listar todos os fluxos de caixa de uma unidade de negócio */
     @GetMapping("/api/cash-flows")
@@ -71,10 +79,14 @@ class CashFlowController {
     @ResponseStatus(HttpStatus.CREATED)
     SingleCashFlowResponse createCashFlow(AuthToken authToken, @RequestBody CreateCashFlowRequest request) {
 
-        // TODO: Implementar busca das entidades relacionadas por ID
-        // Por enquanto, vamos usar valores mock para demonstração
-        PaymentMethod paymentMethod = new PaymentMethod("PIX");
-        TransactionType transactionType = new TransactionType("Income");
+        // Buscar entidades relacionadas pelos IDs
+        PaymentMethod paymentMethod = paymentMethodJpaRepository
+                .findById(request.cashFlow().paymentMethodId())
+                .orElseThrow(() -> new RuntimeException("PaymentMethod não encontrado"));
+
+        TransactionType transactionType = transactionTypeJpaRepository
+                .findById(request.cashFlow().transactionTypeId())
+                .orElseThrow(() -> new RuntimeException("TransactionType não encontrado"));
 
         // Se não especificar businessUnit, usa a do usuário logado
         Long businessUnitId = request.cashFlow().businessUnitId() != null
@@ -85,8 +97,13 @@ class CashFlowController {
                 .findById(businessUnitId)
                 .orElseThrow(() -> new RuntimeException("BusinessUnit não encontrada"));
 
-        Category category = new Category("Vendas", transactionType, businessUnit);
-        AccountType accountType = new AccountType("BASA - Corrente", businessUnit);
+        Category category = categoryJpaRepository
+                .findById(request.cashFlow().categoryId())
+                .orElseThrow(() -> new RuntimeException("Category não encontrada"));
+
+        AccountType accountType = accountTypeJpaRepository
+                .findById(request.cashFlow().accountTypeId())
+                .orElseThrow(() -> new RuntimeException("AccountType não encontrado"));
 
         // Buscar profile se fornecido
         Profile profile = null;
@@ -116,12 +133,22 @@ class CashFlowController {
     SingleCashFlowResponse updateCashFlow(
             AuthToken authToken, @PathVariable Integer id, @RequestBody UpdateCashFlowRequest request) {
 
-        // TODO: Implementar busca das entidades relacionadas por ID
-        PaymentMethod paymentMethod = new PaymentMethod("PIX");
-        TransactionType transactionType = new TransactionType("Income");
-        BusinessUnit businessUnit = new BusinessUnit("Default");
-        Category category = new Category("Vendas", transactionType, businessUnit);
-        AccountType accountType = new AccountType("BASA - Corrente", businessUnit);
+        // Buscar entidades relacionadas pelos IDs
+        PaymentMethod paymentMethod = paymentMethodJpaRepository
+                .findById(request.cashFlow().paymentMethodId())
+                .orElseThrow(() -> new RuntimeException("PaymentMethod não encontrado"));
+
+        TransactionType transactionType = transactionTypeJpaRepository
+                .findById(request.cashFlow().transactionTypeId())
+                .orElseThrow(() -> new RuntimeException("TransactionType não encontrado"));
+
+        Category category = categoryJpaRepository
+                .findById(request.cashFlow().categoryId())
+                .orElseThrow(() -> new RuntimeException("Category não encontrada"));
+
+        AccountType accountType = accountTypeJpaRepository
+                .findById(request.cashFlow().accountTypeId())
+                .orElseThrow(() -> new RuntimeException("AccountType não encontrado"));
 
         // Buscar profile se fornecido
         Profile profile = null;

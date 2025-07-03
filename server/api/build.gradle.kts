@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.bundling.Jar
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 dependencies {
@@ -5,10 +6,11 @@ dependencies {
     testCompileOnly(project(":module:core"))
 
     // Inject spring beans on runtime
-    runtimeOnly(project(":module:persistence"))
+    implementation(project(":module:persistence"))
 
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.oauth2.resource.server)
+    implementation(libs.spring.boot.starter.data.jpa)
 
     // Remove Jakarta Persistence API related warnings
     implementation(libs.jakarta.persistence.api)

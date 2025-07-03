@@ -39,16 +39,27 @@ class AuthTokenResolver implements BearerTokenResolver {
     private String resolveFromAuthorizationHeader(HttpServletRequest request) {
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (!StringUtils.startsWithIgnoreCase(authorization, "token")) {
+        if (authorization == null) {
             return null;
         }
 
-        Matcher matcher = AUTHORIZATION_PATTERN.matcher(authorization);
-        if (!matcher.matches()) {
-            throw new OAuth2AuthenticationException(BearerTokenErrors.invalidToken("Bearer token is malformed"));
+        // Aceita tanto 'Token' quanto 'Bearer' como prefixo
+        if (StringUtils.startsWithIgnoreCase(authorization, "token")) {
+            Matcher matcher = AUTHORIZATION_PATTERN.matcher(authorization);
+            if (!matcher.matches()) {
+                throw new OAuth2AuthenticationException(BearerTokenErrors.invalidToken("Bearer token is malformed"));
+            }
+            return matcher.group("token");
+        } else if (StringUtils.startsWithIgnoreCase(authorization, "bearer")) {
+            // Padrão do Spring Security
+            String[] parts = authorization.split(" ");
+            if (parts.length == 2) {
+                return parts[1];
+            } else {
+                throw new OAuth2AuthenticationException(BearerTokenErrors.invalidToken("Bearer token is malformed"));
+            }
         }
-
-        return matcher.group("token");
+        return null;
     }
 
     private boolean isParameterTokenSupportedForRequest(HttpServletRequest request) {
