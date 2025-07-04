@@ -32,7 +32,14 @@ CREATE TABLE IF NOT EXISTS transaction_type (
 CREATE TABLE IF NOT EXISTS payment_method (
   id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(45) NOT NULL,
-  PRIMARY KEY (id)
+  description TEXT,
+  business_unit_id INT NOT NULL,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  FOREIGN KEY (business_unit_id) REFERENCES business_unit(id)
+    ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ==========================================
@@ -127,12 +134,17 @@ INSERT INTO transaction_type (name) VALUES
 ('Expense');
 
 -- Payment Methods
-INSERT INTO payment_method (name) VALUES 
-('PIX'),
-('Dinheiro'),
-('Cartão de Crédito'),
-('Cartão de Débito'),
-('Transferência Bancária');
+INSERT INTO payment_method (name, description, business_unit_id) VALUES 
+('PIX', 'Pagamento instantâneo via PIX', 1),
+('Dinheiro', 'Pagamento em dinheiro', 1),
+('Cartão de Crédito', 'Pagamento com cartão de crédito', 1),
+('Cartão de Débito', 'Pagamento com cartão de débito', 1),
+('Transferência Bancária', 'Transferência entre contas bancárias', 1),
+('PIX', 'Pagamento instantâneo via PIX', 2),
+('Dinheiro', 'Pagamento em dinheiro', 2),
+('Cartão de Crédito', 'Pagamento com cartão de crédito', 2),
+('Cartão de Débito', 'Pagamento com cartão de débito', 2),
+('Transferência Bancária', 'Transferência entre contas bancárias', 2);
 
 -- Account Types
 INSERT INTO account_type (name, business_unit_id) VALUES 

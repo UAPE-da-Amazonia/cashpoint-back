@@ -26,8 +26,8 @@ public class CategoryService {
      * @return Returns category
      */
     public Category getCategory(Integer id, Long userBusinessUnitId, boolean isAdmin) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("category not found."));
+        Category category =
+                categoryRepository.findById(id).orElseThrow(() -> new NoSuchElementException("category not found."));
 
         // Admin can access any category, USER only from their business unit
         if (!isAdmin && !category.getBusinessUnit().getId().equals(userBusinessUnitId)) {
@@ -44,8 +44,7 @@ public class CategoryService {
      * @return Returns category
      */
     public Category getCategory(Integer id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("category not found."));
+        return categoryRepository.findById(id).orElseThrow(() -> new NoSuchElementException("category not found."));
     }
 
     /**
@@ -56,7 +55,8 @@ public class CategoryService {
      * @param isAdmin if user is admin
      * @return Returns list of categories
      */
-    public List<Category> getCategoriesByBusinessUnit(BusinessUnit businessUnit, Long userBusinessUnitId, boolean isAdmin) {
+    public List<Category> getCategoriesByBusinessUnit(
+            BusinessUnit businessUnit, Long userBusinessUnitId, boolean isAdmin) {
         if (businessUnit == null) {
             throw new IllegalArgumentException("business unit is required.");
         }
@@ -115,7 +115,8 @@ public class CategoryService {
      * @param transactionType transaction type
      * @return Returns list of categories
      */
-    public List<Category> getCategoriesByBusinessUnitAndTransactionType(BusinessUnit businessUnit, TransactionType transactionType) {
+    public List<Category> getCategoriesByBusinessUnitAndTransactionType(
+            BusinessUnit businessUnit, TransactionType transactionType) {
         if (businessUnit == null) {
             throw new IllegalArgumentException("business unit is required.");
         }
@@ -136,7 +137,12 @@ public class CategoryService {
      * @param isAdmin if user is admin
      * @return Returns the created category
      */
-    public Category createCategory(String name, TransactionType transactionType, BusinessUnit businessUnit, Long userBusinessUnitId, boolean isAdmin) {
+    public Category createCategory(
+            String name,
+            TransactionType transactionType,
+            BusinessUnit businessUnit,
+            Long userBusinessUnitId,
+            boolean isAdmin) {
         // Admin can create in any business unit, USER only in their own
         if (!isAdmin && !businessUnit.getId().equals(userBusinessUnitId)) {
             throw new SecurityException("Access denied. You can only create categories in your business unit.");
@@ -169,7 +175,8 @@ public class CategoryService {
      * @param isAdmin if user is admin
      * @return Returns the updated category
      */
-    public Category updateCategory(Integer id, String name, TransactionType transactionType, Long userBusinessUnitId, boolean isAdmin) {
+    public Category updateCategory(
+            Integer id, String name, TransactionType transactionType, Long userBusinessUnitId, boolean isAdmin) {
         Category category = getCategory(id, userBusinessUnitId, isAdmin);
 
         // Admin can update any category, USER only from their business unit
@@ -235,4 +242,4 @@ public class CategoryService {
         Category category = getCategory(id);
         categoryRepository.delete(category);
     }
-} 
+}

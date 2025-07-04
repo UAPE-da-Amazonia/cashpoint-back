@@ -1,5 +1,6 @@
 package io.zhc1.realworld.persistence;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -55,6 +56,16 @@ class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    public List<User> findAll() {
+        return userJpaRepository.findAll();
+    }
+
+    @Override
+    public List<User> findByBusinessUnit(BusinessUnit businessUnit) {
+        return userJpaRepository.findByBusinessUnit(businessUnit);
+    }
+
+    @Override
     @Transactional
     public User updateUserDetails(
             UUID userId,
@@ -94,5 +105,10 @@ class UserRepositoryAdapter implements UserRepository {
                     return userJpaRepository.save(user);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("user not found."));
+    }
+
+    @Override
+    public void deleteById(UUID id) {
+        userJpaRepository.deleteById(id);
     }
 }

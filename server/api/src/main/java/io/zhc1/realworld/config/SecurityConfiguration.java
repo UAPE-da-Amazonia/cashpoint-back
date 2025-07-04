@@ -43,6 +43,8 @@ class SecurityConfiguration {
                                 .permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/profiles/{username}", "/api/businessunit")
                                 .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/users")
+                                .authenticated()
                                 .anyRequest()
                                 .authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2

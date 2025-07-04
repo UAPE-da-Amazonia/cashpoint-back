@@ -38,6 +38,19 @@ class BusinessUnitController {
         }
     }
 
+    @GetMapping("/api/businessunit/{id}")
+    BusinessUnitResponse getBusinessUnitById(AuthToken authToken, @PathVariable Long id) {
+        // ADMIN pode ver qualquer unidade, USER só pode ver a sua
+        if (!authToken.isAdmin() && !id.equals(authToken.businessUnitId())) {
+            throw new SecurityException("Access denied. You can only access your own business unit.");
+        }
+
+        BusinessUnit businessUnit =
+                businessUnitService.findById(id).orElseThrow(() -> new RuntimeException("BusinessUnit não encontrada"));
+
+        return new BusinessUnitResponse(businessUnit);
+    }
+
     @PostMapping("/api/businessunit")
     @ResponseStatus(HttpStatus.CREATED)
     BusinessUnitResponse createBusinessUnit(AuthToken authToken, @RequestBody BusinessUnitRequest request) {

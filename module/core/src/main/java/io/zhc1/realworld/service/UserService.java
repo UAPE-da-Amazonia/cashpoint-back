@@ -1,5 +1,6 @@
 package io.zhc1.realworld.service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -107,5 +108,17 @@ public class UserService {
 
         return userRepository.updateUserDetails(
                 userId, passwordEncoder, name, email, username, password, businessUnit, role, bio, imageUrl);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public List<User> getUsersByBusinessUnit(BusinessUnit businessUnit) {
+        return userRepository.findByBusinessUnit(businessUnit);
+    }
+
+    public void deleteUser(UUID id) {
+        userRepository.deleteById(id);
     }
 }

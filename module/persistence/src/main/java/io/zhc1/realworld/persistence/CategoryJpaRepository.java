@@ -1,7 +1,16 @@
 package io.zhc1.realworld.persistence;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import io.zhc1.realworld.model.BusinessUnit;
 import io.zhc1.realworld.model.Category;
+import io.zhc1.realworld.model.TransactionType;
 
-public interface CategoryJpaRepository extends JpaRepository<Category, Integer> {}
+public interface CategoryJpaRepository extends JpaRepository<Category, Integer> {
+
+    List<Category> findByBusinessUnit(BusinessUnit businessUnit);
+
+    List<Category> findByBusinessUnitAndTransactionType(BusinessUnit businessUnit, TransactionType transactionType);
+}

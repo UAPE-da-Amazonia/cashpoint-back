@@ -1,9 +1,14 @@
 package io.zhc1.realworld.model;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository {
+    List<User> findAll();
+
+    List<User> findByBusinessUnit(BusinessUnit businessUnit);
+
     User save(User user);
 
     Optional<User> findById(UUID id);
@@ -29,4 +34,6 @@ public interface UserRepository {
             UserRole role,
             String bio,
             String imageUrl);
+
+    void deleteById(UUID id);
 }

@@ -1,6 +1,7 @@
 package io.zhc1.realworld.api.response;
 
 import io.zhc1.realworld.model.BusinessUnit;
+import io.zhc1.realworld.model.User;
 
 public record UserResponse(
         String name,
@@ -16,5 +17,17 @@ public record UserResponse(
         public BusinessUnitData(BusinessUnit businessUnit) {
             this(businessUnit.getId(), businessUnit.getName(), businessUnit.getDescription());
         }
+    }
+
+    public static UserResponse from(User user, String token) {
+        return new UserResponse(
+                user.getName(),
+                user.getEmail(),
+                token,
+                user.getUsername(),
+                new BusinessUnitData(user.getBusinessUnit()),
+                user.getRole().name(),
+                user.getBio(),
+                user.getImageUrl());
     }
 }

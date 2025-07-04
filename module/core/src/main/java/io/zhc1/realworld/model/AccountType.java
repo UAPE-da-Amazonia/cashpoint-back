@@ -49,6 +49,13 @@ public class AccountType {
         return o instanceof AccountType other && Objects.equals(this.getId(), other.getId());
     }
 
+    public void setName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("name is required.");
+        }
+        this.name = name;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.getId());

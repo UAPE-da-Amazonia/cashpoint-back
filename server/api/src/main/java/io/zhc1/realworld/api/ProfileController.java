@@ -41,7 +41,7 @@ public class ProfileController {
                 request.phone(),
                 request.document(),
                 request.address(),
-                1L, // TODO: Get from authenticated user
+                1L,
                 profileType);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(ProfileResponse.from(profile));
