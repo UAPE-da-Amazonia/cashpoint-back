@@ -432,7 +432,7 @@ Authorization: Bearer {token}
 
 ---
 
-## 💳 PAYMENT METHODS - APENAS GET ✅
+## 💳 PAYMENT METHODS - CRUD COMPLETO ✅
 
 ### GET All Payment Methods
 ```http
@@ -453,6 +453,57 @@ Authorization: Bearer {token}
     }
   ]
 }
+```
+
+### GET Payment Method by ID
+```http
+GET /api/payment-methods/{id}
+Authorization: Bearer {token}
+```
+
+### CREATE Payment Method
+```http
+POST /api/payment-methods
+Content-Type: application/json
+Authorization: Bearer {token}
+```
+
+**Request Body:**
+```json
+{
+  "name": "Novo Método",
+  "description": "Descrição do novo método",
+  "businessUnitId": 1
+}
+```
+
+### UPDATE Payment Method
+```http
+PUT /api/payment-methods/{id}
+Content-Type: application/json
+Authorization: Bearer {token}
+```
+
+**Request Body:**
+```json
+{
+  "name": "Método Atualizado",
+  "description": "Descrição atualizada",
+  "businessUnitId": 1
+}
+```
+
+### DELETE Payment Method
+```http
+DELETE /api/payment-methods/{id}
+Authorization: Bearer {token}
+```
+
+### ACTIVATE/DEACTIVATE Payment Method
+```http
+PUT /api/payment-methods/{id}/activate
+PUT /api/payment-methods/{id}/deactivate
+Authorization: Bearer {token}
 ```
 
 ---
@@ -544,16 +595,14 @@ Authorization: Bearer {token}
 4. **BUSINESS UNIT** - ✅ Funcionando
 5. **CATEGORIES** - ✅ Funcionando
 
-### ✅ APENAS GET:
-1. **PAYMENT METHODS** - ✅ Funcionando
-
 ### ✅ CRUD COMPLETO (CREATE, READ, UPDATE, DELETE):
 1. **USERS** - ✅ Funcionando
 2. **CASHFLOW** - ✅ Funcionando (com operações extras)
 3. **PROFILES** - ✅ Funcionando
 4. **BUSINESS UNIT** - ✅ Funcionando
 5. **CATEGORIES** - ✅ Funcionando
-6. **TRANSACTION TYPES** - ✅ Funcionando (CRUD completo adicionado)
+6. **TRANSACTION TYPES** - ✅ Funcionando
+7. **PAYMENT METHODS** - ✅ Funcionando (CRUD completo)
 
 ### ❌ COM PROBLEMAS:
 1. **ACCOUNT TYPES** - ❌ Erro 500

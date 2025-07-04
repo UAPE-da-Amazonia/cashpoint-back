@@ -31,7 +31,7 @@ class CashFlowRepositoryAdapter implements CashFlowRepository {
 
     @Override
     public List<CashFlow> findByBusinessUnit(BusinessUnit businessUnit) {
-        return cashFlowJpaRepository.findByBusinessUnitAndIsActiveTrue(businessUnit);
+        return cashFlowJpaRepository.findByBusinessUnit(businessUnit);
     }
 
     @Override

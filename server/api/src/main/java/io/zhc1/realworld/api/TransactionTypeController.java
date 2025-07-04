@@ -52,7 +52,7 @@ class TransactionTypeController {
     @PutMapping("/api/transaction-types/{id}")
     ResponseEntity<TransactionTypeResponse> updateTransactionType(
             @PathVariable Integer id, @RequestBody TransactionTypeRequest request) {
-        
+
         TransactionType existingTransactionType = transactionTypeJpaRepository
                 .findById(id)
                 .orElseThrow(() -> new RuntimeException("TransactionType não encontrado"));
