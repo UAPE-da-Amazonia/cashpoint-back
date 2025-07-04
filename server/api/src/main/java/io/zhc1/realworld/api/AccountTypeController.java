@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,22 +32,10 @@ public class AccountTypeController {
     private final AccountTypeJpaRepository accountTypeJpaRepository;
     private final BusinessUnitService businessUnitService;
 
-    /** GET /api/account-types - Listar todos os tipos de conta */
+    /** GET /api/account-types - Listar todos os tipos de conta (apenas id e name) */
     @GetMapping
-    public ResponseEntity<AccountTypeResponse> getAccountTypes(
-            AuthToken authToken, @RequestParam(value = "businessUnit", required = false) Long businessUnitId) {
-
-        // Se não especificar businessUnit, usa a do usuário logado
-        if (businessUnitId == null) {
-            businessUnitId = authToken.businessUnitId();
-        }
-
-        // Verificar se o usuário tem acesso à unidade de negócio
-        if (!authToken.isAdmin() && !businessUnitId.equals(authToken.businessUnitId())) {
-            throw new SecurityException("Access denied. You can only access account types from your business unit.");
-        }
-
-        List<AccountType> accountTypes = accountTypeJpaRepository.findByBusinessUnitId(businessUnitId);
+    public ResponseEntity<AccountTypeResponse> getAccountTypes() {
+        List<AccountType> accountTypes = accountTypeJpaRepository.findAll();
         return ResponseEntity.ok(new AccountTypeResponse(accountTypes));
     }
 

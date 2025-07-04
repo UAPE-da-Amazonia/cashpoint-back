@@ -7,13 +7,12 @@ import io.zhc1.realworld.model.AccountType;
 
 public record AccountTypeResponse(List<AccountTypeData> accountTypes) {
 
-    public record AccountTypeData(Integer id, String name, Long businessUnitId, String businessUnitName) {
+    public record AccountTypeData(Integer id, String name, Long businessUnitId) {
         public AccountTypeData(AccountType accountType) {
             this(
                     accountType.getId(),
                     accountType.getName(),
-                    accountType.getBusinessUnit().getId(),
-                    accountType.getBusinessUnit().getName());
+                    accountType.getBusinessUnit().getId());
         }
     }
 

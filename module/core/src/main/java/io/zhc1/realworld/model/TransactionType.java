@@ -32,6 +32,13 @@ public class TransactionType {
         this.name = name;
     }
 
+    public void setName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("name is required.");
+        }
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         return o instanceof TransactionType other && Objects.equals(this.getId(), other.getId());
