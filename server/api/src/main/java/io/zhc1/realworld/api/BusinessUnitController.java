@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,11 +21,12 @@ import io.zhc1.realworld.model.BusinessUnit;
 import io.zhc1.realworld.service.BusinessUnitService;
 
 @RestController
+@RequestMapping("/api/businessunit")
 @RequiredArgsConstructor
 class BusinessUnitController {
     private final BusinessUnitService businessUnitService;
 
-    @GetMapping("/api/businessunit")
+    @GetMapping
     BusinessUnitResponse getAllBusinessUnitResponse(AuthToken authToken) {
         // ADMIN pode ver todas as unidades, USER só vê a sua
         if (authToken.isAdmin()) {
@@ -38,7 +40,7 @@ class BusinessUnitController {
         }
     }
 
-    @GetMapping("/api/businessunit/{id}")
+    @GetMapping("/{id}")
     BusinessUnitResponse getBusinessUnitById(AuthToken authToken, @PathVariable Long id) {
         // ADMIN pode ver qualquer unidade, USER só pode ver a sua
         if (!authToken.isAdmin() && !id.equals(authToken.businessUnitId())) {
@@ -51,7 +53,7 @@ class BusinessUnitController {
         return new BusinessUnitResponse(businessUnit);
     }
 
-    @PostMapping("/api/businessunit")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     BusinessUnitResponse createBusinessUnit(AuthToken authToken, @RequestBody BusinessUnitRequest request) {
         // Apenas ADMIN pode criar unidades de negócio
@@ -64,7 +66,7 @@ class BusinessUnitController {
         return new BusinessUnitResponse(savedBusinessUnit);
     }
 
-    @PutMapping("/api/businessunit/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<BusinessUnitResponse> editarBusinessUnit(
             AuthToken authToken, @PathVariable Long id, @RequestBody BusinessUnitRequest request) {
 
@@ -77,7 +79,7 @@ class BusinessUnitController {
         return ResponseEntity.ok(new BusinessUnitResponse(businessUnit));
     }
 
-    @DeleteMapping("/api/businessunit/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarBusinessUnit(AuthToken authToken, @PathVariable Long id) {
         // Apenas ADMIN pode deletar unidades de negócio
         if (!authToken.isAdmin()) {

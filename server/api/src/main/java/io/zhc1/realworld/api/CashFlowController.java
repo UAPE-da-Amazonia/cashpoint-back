@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,6 +38,7 @@ import io.zhc1.realworld.service.CashFlowService;
 import io.zhc1.realworld.service.ProfileService;
 
 @RestController
+@RequestMapping("/api/cash-flows")
 @RequiredArgsConstructor
 class CashFlowController {
     private final CashFlowService cashFlowService;
@@ -48,7 +50,7 @@ class CashFlowController {
     private final AccountTypeJpaRepository accountTypeJpaRepository;
 
     /** GET /api/cash-flows - Listar todos os fluxos de caixa de uma unidade de negócio */
-    @GetMapping("/api/cash-flows")
+    @GetMapping
     MultipleCashFlowsResponse getCashFlows(
             AuthToken authToken, @RequestParam(value = "businessUnit", required = false) Long businessUnitId) {
 
@@ -68,14 +70,14 @@ class CashFlowController {
     }
 
     /** GET /api/cash-flows/{id} - Obter um fluxo de caixa específico */
-    @GetMapping("/api/cash-flows/{id}")
+    @GetMapping("/{id}")
     SingleCashFlowResponse getCashFlow(AuthToken authToken, @PathVariable Integer id) {
         CashFlow cashFlow = cashFlowService.getCashFlow(id, authToken.businessUnitId(), authToken.isAdmin());
         return new SingleCashFlowResponse(cashFlow);
     }
 
     /** POST /api/cash-flows - Criar um novo fluxo de caixa */
-    @PostMapping("/api/cash-flows")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     SingleCashFlowResponse createCashFlow(AuthToken authToken, @RequestBody CreateCashFlowRequest request) {
 
@@ -129,7 +131,7 @@ class CashFlowController {
     }
 
     /** PUT /api/cash-flows/{id} - Atualizar um fluxo de caixa */
-    @PutMapping("/api/cash-flows/{id}")
+    @PutMapping("/{id}")
     SingleCashFlowResponse updateCashFlow(
             AuthToken authToken, @PathVariable Integer id, @RequestBody UpdateCashFlowRequest request) {
 
@@ -174,14 +176,14 @@ class CashFlowController {
     }
 
     /** DELETE /api/cash-flows/{id} - Deletar um fluxo de caixa */
-    @DeleteMapping("/api/cash-flows/{id}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteCashFlow(AuthToken authToken, @PathVariable Integer id) {
         cashFlowService.deleteCashFlow(id, authToken.businessUnitId(), authToken.isAdmin());
     }
 
     /** GET /api/cash-flows/search - Buscar fluxos de caixa por período */
-    @GetMapping("/api/cash-flows/search")
+    @GetMapping("/search")
     MultipleCashFlowsResponse searchCashFlows(
             AuthToken authToken,
             @RequestParam(value = "businessUnit", required = false) Long businessUnitId,
@@ -204,28 +206,28 @@ class CashFlowController {
     }
 
     /** PUT /api/cash-flows/{id}/check - Marcar como revisado */
-    @PutMapping("/api/cash-flows/{id}/check")
+    @PutMapping("/{id}/check")
     SingleCashFlowResponse markAsChecked(AuthToken authToken, @PathVariable Integer id) {
         CashFlow cashFlow = cashFlowService.markAsChecked(id, authToken.businessUnitId(), authToken.isAdmin());
         return new SingleCashFlowResponse(cashFlow);
     }
 
     /** PUT /api/cash-flows/{id}/uncheck - Desmarcar como revisado */
-    @PutMapping("/api/cash-flows/{id}/uncheck")
+    @PutMapping("/{id}/uncheck")
     SingleCashFlowResponse markAsUnchecked(AuthToken authToken, @PathVariable Integer id) {
         CashFlow cashFlow = cashFlowService.markAsUnchecked(id, authToken.businessUnitId(), authToken.isAdmin());
         return new SingleCashFlowResponse(cashFlow);
     }
 
     /** PUT /api/cash-flows/{id}/deactivate - Desativar fluxo de caixa */
-    @PutMapping("/api/cash-flows/{id}/deactivate")
+    @PutMapping("/{id}/deactivate")
     SingleCashFlowResponse deactivate(AuthToken authToken, @PathVariable Integer id) {
         CashFlow cashFlow = cashFlowService.deactivate(id, authToken.businessUnitId(), authToken.isAdmin());
         return new SingleCashFlowResponse(cashFlow);
     }
 
     /** PUT /api/cash-flows/{id}/activate - Ativar fluxo de caixa */
-    @PutMapping("/api/cash-flows/{id}/activate")
+    @PutMapping("/{id}/activate")
     SingleCashFlowResponse activate(AuthToken authToken, @PathVariable Integer id) {
         CashFlow cashFlow = cashFlowService.activate(id, authToken.businessUnitId(), authToken.isAdmin());
         return new SingleCashFlowResponse(cashFlow);

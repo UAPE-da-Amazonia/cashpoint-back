@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,7 @@ import io.zhc1.realworld.service.BusinessUnitService;
 import io.zhc1.realworld.service.CategoryService;
 
 @RestController
+@RequestMapping("/api/categories")
 @RequiredArgsConstructor
 class CategoryController {
     private final CategoryService categoryService;
@@ -32,7 +34,7 @@ class CategoryController {
     private final TransactionTypeJpaRepository transactionTypeJpaRepository;
 
     /** GET /api/categories - Listar todas as categorias de uma unidade de negócio */
-    @GetMapping("/api/categories")
+    @GetMapping
     CategoryResponse getCategories(
             AuthToken authToken, @RequestParam(value = "businessUnit", required = false) Long businessUnitId) {
 
@@ -52,14 +54,14 @@ class CategoryController {
     }
 
     /** GET /api/categories/{id} - Obter uma categoria específica */
-    @GetMapping("/api/categories/{id}")
+    @GetMapping("/{id}")
     CategoryResponse getCategory(AuthToken authToken, @PathVariable Integer id) {
         Category category = categoryService.getCategory(id, authToken.businessUnitId(), authToken.isAdmin());
         return new CategoryResponse(category);
     }
 
     /** GET /api/categories/by-transaction-type - Listar categorias por tipo de transação */
-    @GetMapping("/api/categories/by-transaction-type")
+    @GetMapping("/by-transaction-type")
     CategoryResponse getCategoriesByTransactionType(
             AuthToken authToken,
             @RequestParam(value = "businessUnit", required = false) Long businessUnitId,
@@ -85,7 +87,7 @@ class CategoryController {
     }
 
     /** POST /api/categories - Criar uma nova categoria */
-    @PostMapping("/api/categories")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     CategoryResponse createCategory(AuthToken authToken, @RequestBody CategoryRequest request) {
 
@@ -107,7 +109,7 @@ class CategoryController {
     }
 
     /** PUT /api/categories/{id} - Atualizar uma categoria */
-    @PutMapping("/api/categories/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<CategoryResponse> updateCategory(
             AuthToken authToken, @PathVariable Integer id, @RequestBody CategoryRequest request) {
 
@@ -122,7 +124,7 @@ class CategoryController {
     }
 
     /** DELETE /api/categories/{id} - Deletar uma categoria */
-    @DeleteMapping("/api/categories/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(AuthToken authToken, @PathVariable Integer id) {
         categoryService.deleteCategory(id, authToken.businessUnitId(), authToken.isAdmin());
         return ResponseEntity.noContent().build();

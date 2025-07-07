@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,19 +20,20 @@ import io.zhc1.realworld.model.TransactionType;
 import io.zhc1.realworld.persistence.TransactionTypeJpaRepository;
 
 @RestController
+@RequestMapping("/api/transaction-types")
 @RequiredArgsConstructor
 class TransactionTypeController {
     private final TransactionTypeJpaRepository transactionTypeJpaRepository;
 
     /** GET /api/transaction-types - Listar todos os tipos de transação */
-    @GetMapping("/api/transaction-types")
+    @GetMapping
     TransactionTypeResponse getTransactionTypes() {
         var transactionTypes = transactionTypeJpaRepository.findAll();
         return new TransactionTypeResponse(transactionTypes);
     }
 
     /** GET /api/transaction-types/{id} - Obter tipo de transação específico */
-    @GetMapping("/api/transaction-types/{id}")
+    @GetMapping("/{id}")
     TransactionTypeResponse getTransactionType(@PathVariable Integer id) {
         var transactionType = transactionTypeJpaRepository
                 .findById(id)
@@ -40,7 +42,7 @@ class TransactionTypeController {
     }
 
     /** POST /api/transaction-types - Criar novo tipo de transação */
-    @PostMapping("/api/transaction-types")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     TransactionTypeResponse createTransactionType(@RequestBody TransactionTypeRequest request) {
         TransactionType transactionType = new TransactionType(request.name());
@@ -49,7 +51,7 @@ class TransactionTypeController {
     }
 
     /** PUT /api/transaction-types/{id} - Atualizar tipo de transação */
-    @PutMapping("/api/transaction-types/{id}")
+    @PutMapping("/{id}")
     ResponseEntity<TransactionTypeResponse> updateTransactionType(
             @PathVariable Integer id, @RequestBody TransactionTypeRequest request) {
 
@@ -63,7 +65,7 @@ class TransactionTypeController {
     }
 
     /** DELETE /api/transaction-types/{id} - Deletar tipo de transação */
-    @DeleteMapping("/api/transaction-types/{id}")
+    @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteTransactionType(@PathVariable Integer id) {
         TransactionType transactionType = transactionTypeJpaRepository
                 .findById(id)
