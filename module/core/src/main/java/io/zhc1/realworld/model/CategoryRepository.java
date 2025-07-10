@@ -15,4 +15,6 @@ public interface CategoryRepository {
     void delete(Category category);
 
     boolean existsById(Integer id);
+
+    Optional<Category> findByIdWithRelations(Integer id);
 }

@@ -45,9 +45,15 @@ class ApplicationExceptionHandler extends ResponseEntityExceptionHandler {
      * @param e Exception
      * @return ProblemDetail
      */
+    @ExceptionHandler(RuntimeException.class)
+    ProblemDetail handle(RuntimeException e) {
+        log.error("RuntimeException: " + e.getMessage(), e);
+        return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     ProblemDetail handle(Exception e) {
-        log.error(e.getMessage(), e);
+        log.error("Unexpected error: " + e.getMessage(), e);
         return ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, "Please contact the administrator.");
     }
 }

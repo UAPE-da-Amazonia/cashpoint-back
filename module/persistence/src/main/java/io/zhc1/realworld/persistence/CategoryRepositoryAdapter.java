@@ -28,6 +28,11 @@ class CategoryRepositoryAdapter implements CategoryRepository {
     }
 
     @Override
+    public Optional<Category> findByIdWithRelations(Integer id) {
+        return categoryJpaRepository.findById(id);
+    }
+
+    @Override
     public List<Category> findByBusinessUnit(BusinessUnit businessUnit) {
         return categoryJpaRepository.findByBusinessUnit(businessUnit);
     }

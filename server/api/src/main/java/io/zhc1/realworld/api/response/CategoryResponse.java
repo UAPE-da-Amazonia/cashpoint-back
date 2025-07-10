@@ -7,13 +7,17 @@ import io.zhc1.realworld.model.Category;
 
 public record CategoryResponse(List<CategoryData> categories) {
 
-    public record CategoryData(Integer id, String name, String transactionType, String businessUnit) {
+    public record CategoryData(Integer id, String name, String transactionTypeName, String businessUnitName) {
         public CategoryData(Category category) {
             this(
                     category.getId(),
                     category.getName(),
-                    category.getTransactionType().getName(),
-                    category.getBusinessUnit().getName());
+                    category.getTransactionType() != null
+                            ? category.getTransactionType().getName()
+                            : null,
+                    category.getBusinessUnit() != null
+                            ? category.getBusinessUnit().getName()
+                            : null);
         }
     }
 

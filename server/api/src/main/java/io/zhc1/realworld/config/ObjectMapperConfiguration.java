@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -19,7 +20,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 class ObjectMapperConfiguration {
     @Bean
     ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
-        return builder.modules(iso8601SerializeModule()).build();
+        ObjectMapper mapper = builder.modules(iso8601SerializeModule()).build();
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+        return mapper;
     }
 
     Module iso8601SerializeModule() {

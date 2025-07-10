@@ -189,4 +189,28 @@ public class CashFlow {
     public int hashCode() {
         return Objects.hash(this.getId());
     }
+
+    public Integer getPaymentMethodId() {
+        return paymentMethod != null ? paymentMethod.getId() : null;
+    }
+
+    public Integer getTransactionTypeId() {
+        return transactionType != null ? transactionType.getId() : null;
+    }
+
+    public Integer getCategoryId() {
+        return category != null ? category.getId() : null;
+    }
+
+    public Integer getAccountTypeId() {
+        return accountType != null ? accountType.getId() : null;
+    }
+
+    public Long getBusinessUnitId() {
+        return businessUnit != null ? businessUnit.getId() : null;
+    }
+
+    public Integer getProfileId() {
+        return profile != null ? profile.getId() : null;
+    }
 }

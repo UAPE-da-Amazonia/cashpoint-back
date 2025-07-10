@@ -61,4 +61,19 @@ public class Category {
     public int hashCode() {
         return Objects.hash(this.getId());
     }
+
+    public Integer getTransactionTypeId() {
+        return transactionType != null ? transactionType.getId() : null;
+    }
+
+    public Long getBusinessUnitId() {
+        return businessUnit != null ? businessUnit.getId() : null;
+    }
+
+    public void setName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("name is required.");
+        }
+        this.name = name;
+    }
 }

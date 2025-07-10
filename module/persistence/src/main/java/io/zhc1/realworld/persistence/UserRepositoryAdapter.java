@@ -80,28 +80,38 @@ class UserRepositoryAdapter implements UserRepository {
             String imageUrl) {
         return this.findById(userId)
                 .map(user -> {
-                    if (!user.equalsEmail(email) && this.existsByEmail(email)) {
+                    if (email != null && !user.equalsEmail(email) && this.existsByEmail(email)) {
                         throw new IllegalArgumentException("email is already exists.");
                     }
 
-                    if (!user.equalsUsername(username) && this.existsByUsername(username)) {
+                    if (username != null && !user.equalsUsername(username) && this.existsByUsername(username)) {
                         throw new IllegalArgumentException("username is already exists.");
                     }
 
                     if (name != null) {
                         user.setName(name);
                     }
-                    user.setEmail(email);
-                    user.setUsername(username);
-                    user.encryptPassword(passwordEncoder, password);
+                    if (email != null) {
+                        user.setEmail(email);
+                    }
+                    if (username != null) {
+                        user.setUsername(username);
+                    }
+                    if (password != null && !password.isBlank()) {
+                        user.encryptPassword(passwordEncoder, password);
+                    }
                     if (businessUnit != null) {
                         user.setBusinessUnit(businessUnit);
                     }
                     if (role != null) {
                         user.setRole(role);
                     }
-                    user.setBio(bio);
-                    user.setImageUrl(imageUrl);
+                    if (bio != null) {
+                        user.setBio(bio);
+                    }
+                    if (imageUrl != null) {
+                        user.setImageUrl(imageUrl);
+                    }
                     return userJpaRepository.save(user);
                 })
                 .orElseThrow(() -> new IllegalArgumentException("user not found."));

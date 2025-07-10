@@ -26,10 +26,11 @@ public class CategoryService {
      * @return Returns category
      */
     public Category getCategory(Integer id, Long userBusinessUnitId, boolean isAdmin) {
-        Category category =
-                categoryRepository.findById(id).orElseThrow(() -> new NoSuchElementException("category not found."));
+        Category category = categoryRepository
+                .findByIdWithRelations(id)
+                .orElseThrow(() -> new NoSuchElementException("category not found."));
 
-        // Admin can access any category, USER only from their business unit
+        // Admin pode acessar qualquer categoria, USER só da sua unidade
         if (!isAdmin && !category.getBusinessUnit().getId().equals(userBusinessUnitId)) {
             throw new SecurityException("Access denied. You can only access categories from your business unit.");
         }
@@ -184,14 +185,15 @@ public class CategoryService {
             throw new SecurityException("Access denied. You can only update categories from your business unit.");
         }
 
-        // Create new category with updated data
-        var updatedCategory = new Category(name, transactionType, category.getBusinessUnit());
-        updatedCategory = categoryRepository.save(updatedCategory);
+        // Update the existing category
+        if (name != null && !name.isBlank()) {
+            category.setName(name);
+        }
 
-        // Delete the old category
-        categoryRepository.delete(category);
+        // Note: TransactionType is immutable in Category, so we can't update it
+        // The transactionType parameter is ignored for now
 
-        return updatedCategory;
+        return categoryRepository.save(category);
     }
 
     /**
