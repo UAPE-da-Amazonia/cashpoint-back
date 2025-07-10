@@ -26,7 +26,7 @@ public final class AuthTokenProvider {
                 .encode(JwtEncoderParameters.from(JwtClaimsSet.builder()
                         .issuer("https://realworld.io")
                         .issuedAt(now)
-                        .expiresAt(now.plusSeconds(300))
+                        .expiresAt(now.plusSeconds(86400))
                         .subject(user.getId().toString())
                         .claim("businessUnitId", user.getBusinessUnit().getId())
                         .claim("role", user.getRole().name())
