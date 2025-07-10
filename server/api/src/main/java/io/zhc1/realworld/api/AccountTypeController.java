@@ -21,7 +21,6 @@ import io.zhc1.realworld.api.response.AccountTypeResponse;
 import io.zhc1.realworld.config.AuthToken;
 import io.zhc1.realworld.model.AccountType;
 import io.zhc1.realworld.service.AccountTypeService;
-import io.zhc1.realworld.service.BusinessUnitService;
 
 @RestController
 @RequestMapping("/api/account-types")
@@ -29,12 +28,12 @@ import io.zhc1.realworld.service.BusinessUnitService;
 public class AccountTypeController {
 
     private final AccountTypeService accountTypeService;
-    private final BusinessUnitService businessUnitService;
 
     /** GET /api/account-types - Listar todos os tipos de conta (apenas id e name) */
     @GetMapping
-    public ResponseEntity<AccountTypeResponse> getAccountTypes() {
-        List<AccountType> accountTypes = accountTypeService.getAllAccountTypes();
+    public ResponseEntity<AccountTypeResponse> getAccountTypes(AuthToken authToken) {
+        List<AccountType> accountTypes = accountTypeService.getAccountTypesByBusinessUnit(
+                authToken.businessUnitId(), authToken.businessUnitId(), authToken.isAdmin());
         return ResponseEntity.ok(new AccountTypeResponse(accountTypes));
     }
 

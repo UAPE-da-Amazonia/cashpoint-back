@@ -21,7 +21,6 @@ import io.zhc1.realworld.api.request.PaymentMethodRequest;
 import io.zhc1.realworld.api.response.PaymentMethodResponse;
 import io.zhc1.realworld.config.AuthToken;
 import io.zhc1.realworld.model.PaymentMethod;
-import io.zhc1.realworld.service.BusinessUnitService;
 import io.zhc1.realworld.service.PaymentMethodService;
 
 @RestController
@@ -30,7 +29,6 @@ import io.zhc1.realworld.service.PaymentMethodService;
 public class PaymentMethodController {
 
     private final PaymentMethodService paymentMethodService;
-    private final BusinessUnitService businessUnitService;
 
     /** GET /api/payment-methods - Listar todos os métodos de pagamento */
     @GetMapping

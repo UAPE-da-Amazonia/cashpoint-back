@@ -56,6 +56,10 @@ public class AccountType {
         this.name = name;
     }
 
+    public Long getBusinessUnitId() {
+        return businessUnit != null ? businessUnit.getId() : null;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.getId());

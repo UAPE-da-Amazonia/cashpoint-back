@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # Banco de dados MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: cashpoint-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: wai
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: Info@1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./module/persistence/src/main/resources/schema-mysql.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./module/persistence/src/main/resources/data-initialization.sql:/docker-entrypoint-initdb.d/02-data.sql
+    networks:
+      - cashpoint-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Aplicação Spring Boot
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cashpoint-api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/wai
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: Info@1234
+      JAVA_OPTS: "-Xmx512m -Xms256m"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - cashpoint-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # Redis para cache (opcional)
+  redis:
+    image: redis:7-alpine
+    container_name: cashpoint-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - cashpoint-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  cashpoint-network:
+    driver: bridge 

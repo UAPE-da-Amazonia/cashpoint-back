@@ -1,0 +1,57 @@
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Arquivos do Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# Logs
+*.log
+logs/
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Arquivos de backup
+*.bak
+*.backup
+
+# Arquivos de teste
+**/test/
+**/tests/
+**/*Test.java
+**/*Tests.java
+
+# Documentação
+README.md
+*.md
+docs/
+
+# Arquivos de configuração local
+.env
+.env.local
+application-local.yaml
+
+# Arquivos Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Git
+.git/
+.gitignore
+
+# Outros
+node_modules/
+npm-debug.log* 

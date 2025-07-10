@@ -12,10 +12,7 @@ import io.zhc1.realworld.model.AccountType;
 public interface AccountTypeJpaRepository extends JpaRepository<AccountType, Integer> {
 
     @EntityGraph(attributePaths = {"businessUnit"})
-    List<AccountType> findByBusinessUnitId(Long businessUnitId);
-
-    @EntityGraph(attributePaths = {"businessUnit"})
-    List<AccountType> findAll();
+    List<AccountType> findByBusinessUnit_Id(Long businessUnitId);
 
     @Query("SELECT at FROM AccountType at JOIN FETCH at.businessUnit WHERE at.businessUnit.id = :businessUnitId")
     List<AccountType> findByBusinessUnitIdWithBusinessUnit(@Param("businessUnitId") Long businessUnitId);

@@ -121,12 +121,14 @@ public class PaymentMethodService {
     }
 
     /**
-     * @param id
-     * @param name
-     * @param description
-     * @param userBusinessUnitId
-     * @param isAdmin
-     * @return
+     * Update a payment method with access control.
+     *
+     * @param id payment method id
+     * @param name payment method name
+     * @param description payment method description
+     * @param userBusinessUnitId user's business unit id
+     * @param isAdmin if user is admin
+     * @return Returns the updated payment method
      */
     public PaymentMethod updatePaymentMethod(
             Integer id, String name, String description, Long userBusinessUnitId, boolean isAdmin) {

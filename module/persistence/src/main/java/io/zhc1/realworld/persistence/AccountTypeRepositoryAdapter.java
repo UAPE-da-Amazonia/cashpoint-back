@@ -27,7 +27,7 @@ public class AccountTypeRepositoryAdapter implements AccountTypeRepository {
 
     @Override
     public List<AccountType> findByBusinessUnitId(Long businessUnitId) {
-        return accountTypeJpaRepository.findByBusinessUnitIdWithBusinessUnit(businessUnitId);
+        return accountTypeJpaRepository.findByBusinessUnit_Id(businessUnitId);
     }
 
     @Override
