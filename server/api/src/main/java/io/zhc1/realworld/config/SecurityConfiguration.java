@@ -43,6 +43,8 @@ class SecurityConfiguration {
                                 .permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/profiles/{username}", "/api/businessunit")
                                 .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator/health/**")
+                                .permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/users")
                                 .authenticated()
                                 .anyRequest()
