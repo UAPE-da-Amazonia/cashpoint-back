@@ -9,7 +9,7 @@ USE wai;
 -- TABLE: business_unit
 -- ==========================================
 CREATE TABLE IF NOT EXISTS business_unit (
-  id INT NOT NULL AUTO_INCREMENT,
+  id BIGINT NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL UNIQUE,
   description TEXT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS payment_method (
   id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(45) NOT NULL,
   description TEXT,
-  business_unit_id INT NOT NULL,
+  business_unit_id BIGINT NOT NULL,
   is_active BOOLEAN DEFAULT TRUE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS payment_method (
 CREATE TABLE IF NOT EXISTS account_type (
   id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
-  business_unit_id INT NOT NULL,
+  business_unit_id BIGINT NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (business_unit_id) REFERENCES business_unit(id)
     ON DELETE RESTRICT ON UPDATE CASCADE
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS category (
   id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(100) NOT NULL,
   transaction_type_id INT NOT NULL,
-  business_unit_id INT NOT NULL,
+  business_unit_id BIGINT NOT NULL,
   PRIMARY KEY (id),
   FOREIGN KEY (transaction_type_id) REFERENCES transaction_type(id)
     ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   phone VARCHAR(20),
   document VARCHAR(20), -- CPF/CNPJ
   address TEXT,
-  business_unit_id INT NOT NULL,
+  business_unit_id BIGINT NOT NULL,
   profile_type ENUM('CLIENT', 'SUPPLIER', 'BOTH') DEFAULT 'CLIENT',
   is_active BOOLEAN DEFAULT TRUE,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS cash_flow (
   transaction_type_id INT NOT NULL,
   category_id INT NOT NULL,
   account_type_id INT NOT NULL,
-  business_unit_id INT NOT NULL,
+  business_unit_id BIGINT NOT NULL,
   profile_id INT, -- Relacionamento com profile (opcional)
   created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   created_by VARCHAR(45),
@@ -117,6 +117,26 @@ CREATE TABLE IF NOT EXISTS cash_flow (
   FOREIGN KEY (business_unit_id) REFERENCES business_unit(id),
   FOREIGN KEY (profile_id) REFERENCES profiles(id)
     ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ==========================================
+-- TABLE: users
+-- ==========================================
+CREATE TABLE IF NOT EXISTS users (
+  id CHAR(36) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(30) NOT NULL UNIQUE,
+  username VARCHAR(30) NOT NULL UNIQUE,
+  image_url VARCHAR(200),
+  password VARCHAR(200) NOT NULL,
+  bio VARCHAR(500),
+  business_unit_id BIGINT NOT NULL,
+  role VARCHAR(10) NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  FOREIGN KEY (business_unit_id) REFERENCES business_unit(id)
+    ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ==========================================
