@@ -20,17 +20,16 @@ import lombok.RequiredArgsConstructor;
 import io.zhc1.realworld.api.request.PaymentMethodRequest;
 import io.zhc1.realworld.api.response.PaymentMethodResponse;
 import io.zhc1.realworld.config.AuthToken;
-import io.zhc1.realworld.model.BusinessUnit;
 import io.zhc1.realworld.model.PaymentMethod;
-import io.zhc1.realworld.persistence.PaymentMethodJpaRepository;
 import io.zhc1.realworld.service.BusinessUnitService;
+import io.zhc1.realworld.service.PaymentMethodService;
 
 @RestController
 @RequestMapping("/api/payment-methods")
 @RequiredArgsConstructor
 public class PaymentMethodController {
 
-    private final PaymentMethodJpaRepository paymentMethodJpaRepository;
+    private final PaymentMethodService paymentMethodService;
     private final BusinessUnitService businessUnitService;
 
     /** GET /api/payment-methods - Listar todos os métodos de pagamento */
@@ -43,12 +42,8 @@ public class PaymentMethodController {
             businessUnitId = authToken.businessUnitId();
         }
 
-        // Verificar se o usuário tem acesso à unidade de negócio
-        if (!authToken.isAdmin() && !businessUnitId.equals(authToken.businessUnitId())) {
-            throw new SecurityException("Access denied. You can only access payment methods from your business unit.");
-        }
-
-        List<PaymentMethod> paymentMethods = paymentMethodJpaRepository.findByBusinessUnit_Id(businessUnitId);
+        List<PaymentMethod> paymentMethods = paymentMethodService.getPaymentMethodsByBusinessUnit(
+                businessUnitId, authToken.businessUnitId(), authToken.isAdmin());
         return ResponseEntity.ok(new PaymentMethodResponse(paymentMethods));
     }
 
@@ -56,14 +51,8 @@ public class PaymentMethodController {
     @GetMapping("/{id}")
     public ResponseEntity<PaymentMethodResponse> getPaymentMethod(AuthToken authToken, @PathVariable Integer id) {
 
-        PaymentMethod paymentMethod = paymentMethodJpaRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("PaymentMethod não encontrado"));
-
-        // Verificar se o usuário tem acesso ao método de pagamento
-        if (!authToken.isAdmin() && !paymentMethod.getBusinessUnitId().equals(authToken.businessUnitId())) {
-            throw new SecurityException("Access denied. You can only access payment methods from your business unit.");
-        }
+        PaymentMethod paymentMethod =
+                paymentMethodService.getPaymentMethod(id, authToken.businessUnitId(), authToken.isAdmin());
 
         return ResponseEntity.ok(new PaymentMethodResponse(paymentMethod));
     }
@@ -77,19 +66,8 @@ public class PaymentMethodController {
         // Se não especificar businessUnit, usa a do usuário logado
         Long businessUnitId = request.businessUnitId() != null ? request.businessUnitId() : authToken.businessUnitId();
 
-        // Verificar se o usuário tem acesso à unidade de negócio
-        if (!authToken.isAdmin() && !businessUnitId.equals(authToken.businessUnitId())) {
-            throw new SecurityException("Access denied. You can only create payment methods for your business unit.");
-        }
-
-        // Verificar se a unidade de negócio existe
-        BusinessUnit businessUnit = businessUnitService
-                .findById(businessUnitId)
-                .orElseThrow(() -> new RuntimeException("BusinessUnit não encontrada"));
-
-        PaymentMethod paymentMethod = new PaymentMethod(request.name(), request.description(), businessUnit);
-
-        PaymentMethod savedPaymentMethod = paymentMethodJpaRepository.save(paymentMethod);
+        PaymentMethod savedPaymentMethod = paymentMethodService.createPaymentMethod(
+                request.name(), request.description(), businessUnitId, authToken.businessUnitId(), authToken.isAdmin());
         return ResponseEntity.status(HttpStatus.CREATED).body(new PaymentMethodResponse(savedPaymentMethod));
     }
 
@@ -98,19 +76,8 @@ public class PaymentMethodController {
     public ResponseEntity<PaymentMethodResponse> updatePaymentMethod(
             AuthToken authToken, @PathVariable Integer id, @RequestBody PaymentMethodRequest request) {
 
-        PaymentMethod existingPaymentMethod = paymentMethodJpaRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("PaymentMethod não encontrado"));
-
-        // Verificar se o usuário tem acesso ao método de pagamento
-        if (!authToken.isAdmin() && !existingPaymentMethod.getBusinessUnitId().equals(authToken.businessUnitId())) {
-            throw new SecurityException("Access denied. You can only update payment methods from your business unit.");
-        }
-
-        existingPaymentMethod.setName(request.name());
-        existingPaymentMethod.setDescription(request.description());
-
-        PaymentMethod updatedPaymentMethod = paymentMethodJpaRepository.save(existingPaymentMethod);
+        PaymentMethod updatedPaymentMethod = paymentMethodService.updatePaymentMethod(
+                id, request.name(), request.description(), authToken.businessUnitId(), authToken.isAdmin());
         return ResponseEntity.ok(new PaymentMethodResponse(updatedPaymentMethod));
     }
 
@@ -118,16 +85,7 @@ public class PaymentMethodController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePaymentMethod(AuthToken authToken, @PathVariable Integer id) {
 
-        PaymentMethod paymentMethod = paymentMethodJpaRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("PaymentMethod não encontrado"));
-
-        // Verificar se o usuário tem acesso ao método de pagamento
-        if (!authToken.isAdmin() && !paymentMethod.getBusinessUnitId().equals(authToken.businessUnitId())) {
-            throw new SecurityException("Access denied. You can only delete payment methods from your business unit.");
-        }
-
-        paymentMethodJpaRepository.delete(paymentMethod);
+        paymentMethodService.deletePaymentMethod(id, authToken.businessUnitId(), authToken.isAdmin());
         return ResponseEntity.noContent().build();
     }
 
@@ -135,18 +93,8 @@ public class PaymentMethodController {
     @PutMapping("/{id}/activate")
     public ResponseEntity<PaymentMethodResponse> activatePaymentMethod(AuthToken authToken, @PathVariable Integer id) {
 
-        PaymentMethod paymentMethod = paymentMethodJpaRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("PaymentMethod não encontrado"));
-
-        // Verificar se o usuário tem acesso ao método de pagamento
-        if (!authToken.isAdmin() && !paymentMethod.getBusinessUnitId().equals(authToken.businessUnitId())) {
-            throw new SecurityException(
-                    "Access denied. You can only activate payment methods from your business unit.");
-        }
-
-        paymentMethod.setActive(true);
-        PaymentMethod activatedPaymentMethod = paymentMethodJpaRepository.save(paymentMethod);
+        PaymentMethod activatedPaymentMethod =
+                paymentMethodService.activatePaymentMethod(id, authToken.businessUnitId(), authToken.isAdmin());
         return ResponseEntity.ok(new PaymentMethodResponse(activatedPaymentMethod));
     }
 
@@ -155,18 +103,8 @@ public class PaymentMethodController {
     public ResponseEntity<PaymentMethodResponse> deactivatePaymentMethod(
             AuthToken authToken, @PathVariable Integer id) {
 
-        PaymentMethod paymentMethod = paymentMethodJpaRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("PaymentMethod não encontrado"));
-
-        // Verificar se o usuário tem acesso ao método de pagamento
-        if (!authToken.isAdmin() && !paymentMethod.getBusinessUnitId().equals(authToken.businessUnitId())) {
-            throw new SecurityException(
-                    "Access denied. You can only deactivate payment methods from your business unit.");
-        }
-
-        paymentMethod.setActive(false);
-        PaymentMethod deactivatedPaymentMethod = paymentMethodJpaRepository.save(paymentMethod);
+        PaymentMethod deactivatedPaymentMethod =
+                paymentMethodService.deactivatePaymentMethod(id, authToken.businessUnitId(), authToken.isAdmin());
         return ResponseEntity.ok(new PaymentMethodResponse(deactivatedPaymentMethod));
     }
 }

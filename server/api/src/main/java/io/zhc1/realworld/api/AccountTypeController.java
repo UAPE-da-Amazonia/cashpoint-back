@@ -20,8 +20,7 @@ import io.zhc1.realworld.api.request.AccountTypeRequest;
 import io.zhc1.realworld.api.response.AccountTypeResponse;
 import io.zhc1.realworld.config.AuthToken;
 import io.zhc1.realworld.model.AccountType;
-import io.zhc1.realworld.model.BusinessUnit;
-import io.zhc1.realworld.persistence.AccountTypeJpaRepository;
+import io.zhc1.realworld.service.AccountTypeService;
 import io.zhc1.realworld.service.BusinessUnitService;
 
 @RestController
@@ -29,13 +28,13 @@ import io.zhc1.realworld.service.BusinessUnitService;
 @RequiredArgsConstructor
 public class AccountTypeController {
 
-    private final AccountTypeJpaRepository accountTypeJpaRepository;
+    private final AccountTypeService accountTypeService;
     private final BusinessUnitService businessUnitService;
 
     /** GET /api/account-types - Listar todos os tipos de conta (apenas id e name) */
     @GetMapping
     public ResponseEntity<AccountTypeResponse> getAccountTypes() {
-        List<AccountType> accountTypes = accountTypeJpaRepository.findAll();
+        List<AccountType> accountTypes = accountTypeService.getAllAccountTypes();
         return ResponseEntity.ok(new AccountTypeResponse(accountTypes));
     }
 
@@ -43,14 +42,8 @@ public class AccountTypeController {
     @GetMapping("/{id}")
     public ResponseEntity<AccountTypeResponse> getAccountType(AuthToken authToken, @PathVariable Integer id) {
 
-        AccountType accountType = accountTypeJpaRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("AccountType não encontrado"));
-
-        // Verificar se o usuário tem acesso ao tipo de conta
-        if (!authToken.isAdmin() && !accountType.getBusinessUnit().getId().equals(authToken.businessUnitId())) {
-            throw new SecurityException("Access denied. You can only access account types from your business unit.");
-        }
+        AccountType accountType =
+                accountTypeService.getAccountType(id, authToken.businessUnitId(), authToken.isAdmin());
 
         return ResponseEntity.ok(new AccountTypeResponse(accountType));
     }
@@ -64,18 +57,8 @@ public class AccountTypeController {
         // Se não especificar businessUnit, usa a do usuário logado
         Long businessUnitId = request.businessUnitId() != null ? request.businessUnitId() : authToken.businessUnitId();
 
-        // Verificar se o usuário tem acesso à unidade de negócio
-        if (!authToken.isAdmin() && !businessUnitId.equals(authToken.businessUnitId())) {
-            throw new SecurityException("Access denied. You can only create account types for your business unit.");
-        }
-
-        // Verificar se a unidade de negócio existe
-        BusinessUnit businessUnit = businessUnitService
-                .findById(businessUnitId)
-                .orElseThrow(() -> new RuntimeException("BusinessUnit não encontrada"));
-
-        AccountType accountType = new AccountType(request.name(), businessUnit);
-        AccountType savedAccountType = accountTypeJpaRepository.save(accountType);
+        AccountType savedAccountType = accountTypeService.createAccountType(
+                request.name(), businessUnitId, authToken.businessUnitId(), authToken.isAdmin());
         return ResponseEntity.status(HttpStatus.CREATED).body(new AccountTypeResponse(savedAccountType));
     }
 
@@ -84,18 +67,8 @@ public class AccountTypeController {
     public ResponseEntity<AccountTypeResponse> updateAccountType(
             AuthToken authToken, @PathVariable Integer id, @RequestBody AccountTypeRequest request) {
 
-        AccountType existingAccountType = accountTypeJpaRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("AccountType não encontrado"));
-
-        // Verificar se o usuário tem acesso ao tipo de conta
-        if (!authToken.isAdmin()
-                && !existingAccountType.getBusinessUnit().getId().equals(authToken.businessUnitId())) {
-            throw new SecurityException("Access denied. You can only update account types from your business unit.");
-        }
-
-        existingAccountType.setName(request.name());
-        AccountType updatedAccountType = accountTypeJpaRepository.save(existingAccountType);
+        AccountType updatedAccountType = accountTypeService.updateAccountType(
+                id, request.name(), authToken.businessUnitId(), authToken.isAdmin());
         return ResponseEntity.ok(new AccountTypeResponse(updatedAccountType));
     }
 
@@ -103,16 +76,7 @@ public class AccountTypeController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAccountType(AuthToken authToken, @PathVariable Integer id) {
 
-        AccountType accountType = accountTypeJpaRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("AccountType não encontrado"));
-
-        // Verificar se o usuário tem acesso ao tipo de conta
-        if (!authToken.isAdmin() && !accountType.getBusinessUnit().getId().equals(authToken.businessUnitId())) {
-            throw new SecurityException("Access denied. You can only delete account types from your business unit.");
-        }
-
-        accountTypeJpaRepository.delete(accountType);
+        accountTypeService.deleteAccountType(id, authToken.businessUnitId(), authToken.isAdmin());
         return ResponseEntity.noContent().build();
     }
 }

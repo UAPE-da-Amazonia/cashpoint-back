@@ -46,12 +46,7 @@ mysql -u root -p wai < module/persistence/src/main/resources/schema-mysql.sql
 
 ### Executar a aplicação
 ```bash
-./gradlew bootRun
-```
-
-### Executar apenas o servidor API
-```bash
-./gradlew :server:api:bootRun
+./gradlew :realworld:bootRun
 ```
 
 ### Executar testes
@@ -65,12 +60,6 @@ mysql -u root -p wai < module/persistence/src/main/resources/schema-mysql.sql
 - **Swagger/OpenAPI**: `http://localhost:8080/swagger-ui.html`
 - **Health Check**: `http://localhost:8080/actuator/health`
 
-## 📚 Documentação
-
-- **Documentação Técnica do Backend**: [BACKEND_DOCUMENTATION.md](BACKEND_DOCUMENTATION.md)
-- **Documentação Completa da API**: [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
-- **Especificação Frontend**: [FRONTEND_SPECIFICATION.md](FRONTEND_SPECIFICATION.md)
-- **Coleção Postman**: [api-docs/RealWorld-API.postman_collection.json](api-docs/RealWorld-API.postman_collection.json)
 
 ## 🏗️ Estrutura do Projeto
 

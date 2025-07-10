@@ -17,27 +17,25 @@ import lombok.RequiredArgsConstructor;
 import io.zhc1.realworld.api.request.TransactionTypeRequest;
 import io.zhc1.realworld.api.response.TransactionTypeResponse;
 import io.zhc1.realworld.model.TransactionType;
-import io.zhc1.realworld.persistence.TransactionTypeJpaRepository;
+import io.zhc1.realworld.service.TransactionTypeService;
 
 @RestController
 @RequestMapping("/api/transaction-types")
 @RequiredArgsConstructor
 class TransactionTypeController {
-    private final TransactionTypeJpaRepository transactionTypeJpaRepository;
+    private final TransactionTypeService transactionTypeService;
 
     /** GET /api/transaction-types - Listar todos os tipos de transação */
     @GetMapping
     TransactionTypeResponse getTransactionTypes() {
-        var transactionTypes = transactionTypeJpaRepository.findAll();
+        var transactionTypes = transactionTypeService.getAllTransactionTypes();
         return new TransactionTypeResponse(transactionTypes);
     }
 
     /** GET /api/transaction-types/{id} - Obter tipo de transação específico */
     @GetMapping("/{id}")
     TransactionTypeResponse getTransactionType(@PathVariable Integer id) {
-        var transactionType = transactionTypeJpaRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("TransactionType não encontrado"));
+        var transactionType = transactionTypeService.getTransactionType(id);
         return new TransactionTypeResponse(transactionType);
     }
 
@@ -45,8 +43,7 @@ class TransactionTypeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     TransactionTypeResponse createTransactionType(@RequestBody TransactionTypeRequest request) {
-        TransactionType transactionType = new TransactionType(request.name());
-        TransactionType savedTransactionType = transactionTypeJpaRepository.save(transactionType);
+        TransactionType savedTransactionType = transactionTypeService.createTransactionType(request.name());
         return new TransactionTypeResponse(savedTransactionType);
     }
 
@@ -55,23 +52,14 @@ class TransactionTypeController {
     ResponseEntity<TransactionTypeResponse> updateTransactionType(
             @PathVariable Integer id, @RequestBody TransactionTypeRequest request) {
 
-        TransactionType existingTransactionType = transactionTypeJpaRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("TransactionType não encontrado"));
-
-        existingTransactionType.setName(request.name());
-        TransactionType updatedTransactionType = transactionTypeJpaRepository.save(existingTransactionType);
+        TransactionType updatedTransactionType = transactionTypeService.updateTransactionType(id, request.name());
         return ResponseEntity.ok(new TransactionTypeResponse(updatedTransactionType));
     }
 
     /** DELETE /api/transaction-types/{id} - Deletar tipo de transação */
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteTransactionType(@PathVariable Integer id) {
-        TransactionType transactionType = transactionTypeJpaRepository
-                .findById(id)
-                .orElseThrow(() -> new RuntimeException("TransactionType não encontrado"));
-
-        transactionTypeJpaRepository.delete(transactionType);
+        transactionTypeService.deleteTransactionType(id);
         return ResponseEntity.noContent().build();
     }
 }
