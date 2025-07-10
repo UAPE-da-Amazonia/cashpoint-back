@@ -18,7 +18,7 @@ RUN ./gradlew dependencies --no-daemon
 COPY . .
 
 # Build da aplicação
-RUN ./gradlew :server:api:bootJar --no-daemon
+RUN ./gradlew build
 
 # Imagem de produção
 FROM eclipse-temurin:21-jre-alpine

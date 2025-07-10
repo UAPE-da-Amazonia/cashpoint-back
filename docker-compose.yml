@@ -12,7 +12,7 @@ services:
       MYSQL_USER: admin
       MYSQL_PASSWORD: Info@1234
     ports:
-      - "3306:3306"
+      - "3308:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./module/persistence/src/main/resources/schema-mysql.sql:/docker-entrypoint-initdb.d/01-schema.sql
@@ -32,7 +32,7 @@ services:
     container_name: cashpoint-api
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "8082:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/wai
@@ -57,7 +57,7 @@ services:
     container_name: cashpoint-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "6381:6379"
     volumes:
       - redis_data:/data
     networks:
