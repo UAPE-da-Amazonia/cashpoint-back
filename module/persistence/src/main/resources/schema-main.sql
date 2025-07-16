@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS business_unit (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ==========================================
 -- TABLE: transaction_type
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS transaction_type (
   id INT NOT NULL AUTO_INCREMENT,
   name VARCHAR(45) NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ==========================================
 -- TABLE: payment_method
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS payment_method (
   PRIMARY KEY (id),
   FOREIGN KEY (business_unit_id) REFERENCES business_unit(id)
     ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ==========================================
 -- TABLE: account_type
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS account_type (
   PRIMARY KEY (id),
   FOREIGN KEY (business_unit_id) REFERENCES business_unit(id)
     ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ==========================================
 -- TABLE: category
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS category (
     ON DELETE RESTRICT ON UPDATE CASCADE,
   FOREIGN KEY (business_unit_id) REFERENCES business_unit(id)
     ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ==========================================
 -- TABLE: profiles (Clientes/Fornecedores)
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   PRIMARY KEY (id),
   FOREIGN KEY (business_unit_id) REFERENCES business_unit(id)
     ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ==========================================
 -- TABLE: cash_flow (Atualizada com profile_id)
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS cash_flow (
   FOREIGN KEY (business_unit_id) REFERENCES business_unit(id),
   FOREIGN KEY (profile_id) REFERENCES profiles(id)
     ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ==========================================
 -- TABLE: users
@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS users (
   PRIMARY KEY (id),
   FOREIGN KEY (business_unit_id) REFERENCES business_unit(id)
     ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ==========================================
 -- DADOS INICIAIS
@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- Business Units
 INSERT INTO business_unit (name, description) VALUES 
 ('Manaus', 'Unidade Sede'),
-('Belém', 'Unidade Belém');
+('Belém', 'Unidade Belém'),
 ('Brasília', 'Unidade Brasília');
 
 -- Transaction Types
