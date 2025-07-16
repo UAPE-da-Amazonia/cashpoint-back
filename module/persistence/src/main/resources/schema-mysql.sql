@@ -145,48 +145,11 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Business Units
 INSERT INTO business_unit (name, description) VALUES 
-('Empresa A', 'Empresa principal'),
-('Empresa B', 'Empresa secundária');
+('Manaus', 'Unidade Sede'),
+('Belém', 'Unidade Belém');
+('Brasília', 'Unidade Brasília');
 
 -- Transaction Types
 INSERT INTO transaction_type (name) VALUES 
-('Income'),
-('Expense');
-
--- Payment Methods
-INSERT INTO payment_method (name, description, business_unit_id) VALUES 
-('PIX', 'Pagamento instantâneo via PIX', 1),
-('Dinheiro', 'Pagamento em dinheiro', 1),
-('Cartão de Crédito', 'Pagamento com cartão de crédito', 1),
-('Cartão de Débito', 'Pagamento com cartão de débito', 1),
-('Transferência Bancária', 'Transferência entre contas bancárias', 1),
-('PIX', 'Pagamento instantâneo via PIX', 2),
-('Dinheiro', 'Pagamento em dinheiro', 2),
-('Cartão de Crédito', 'Pagamento com cartão de crédito', 2),
-('Cartão de Débito', 'Pagamento com cartão de débito', 2),
-('Transferência Bancária', 'Transferência entre contas bancárias', 2);
-
--- Account Types
-INSERT INTO account_type (name, business_unit_id) VALUES 
-('BASA - Corrente', 1),
-('BASA - Poupança', 1),
-('Itaú - Corrente', 2),
-('Itaú - Poupança', 2);
-
--- Categories
-INSERT INTO category (name, transaction_type_id, business_unit_id) VALUES 
-('Vendas', 1, 1),
-('Serviços', 1, 1),
-('Impostos', 2, 1),
-('Fornecedores', 2, 1),
-('Vendas', 1, 2),
-('Serviços', 1, 2),
-('Impostos', 2, 2),
-('Fornecedores', 2, 2);
-
--- Profiles (Clientes/Fornecedores)
-INSERT INTO profiles (name, email, phone, document, address, business_unit_id, profile_type) VALUES 
-('João Silva', 'joao@email.com', '(11) 99999-9999', '123.456.789-00', 'Rua A, 123 - São Paulo', 1, 'CLIENT'),
-('Maria Santos', 'maria@email.com', '(11) 88888-8888', '987.654.321-00', 'Rua B, 456 - São Paulo', 1, 'CLIENT'),
-('Fornecedor ABC', 'contato@abc.com', '(11) 77777-7777', '12.345.678/0001-90', 'Av. C, 789 - São Paulo', 1, 'SUPPLIER'),
-('Cliente XYZ', 'contato@xyz.com', '(11) 66666-6666', '98.765.432/0001-10', 'Rua D, 321 - Rio de Janeiro', 2, 'BOTH'); 
+('Saída'),
+('Entrada');
