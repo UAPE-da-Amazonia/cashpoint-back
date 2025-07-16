@@ -8,13 +8,13 @@ import io.zhc1.realworld.model.PaymentMethod;
 public record PaymentMethodResponse(List<PaymentMethodData> paymentMethods) {
 
     public record PaymentMethodData(
-            Integer id, String name, String description, Long businessUnitId, boolean isActive) {
+            Integer id, String name, String description, String businessUnitName, boolean isActive) {
         public PaymentMethodData(PaymentMethod paymentMethod) {
             this(
                     paymentMethod.getId(),
                     paymentMethod.getName(),
                     paymentMethod.getDescription(),
-                    paymentMethod.getBusinessUnitId(),
+                    paymentMethod.getBusinessUnit() != null ? paymentMethod.getBusinessUnit().getName() : null,
                     paymentMethod.isActive());
         }
     }
