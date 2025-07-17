@@ -41,8 +41,12 @@ public record CashFlowResponse(
                 cashFlow.getAmount(),
                 cashFlow.getTransactionDate(),
                 cashFlow.getDescription(),
-                cashFlow.getPaymentMethod() != null ? cashFlow.getPaymentMethod().getName() : null,
-                cashFlow.getTransactionType() != null ? cashFlow.getTransactionType().getName() : null,
+                cashFlow.getPaymentMethod() != null
+                        ? cashFlow.getPaymentMethod().getName()
+                        : null,
+                cashFlow.getTransactionType() != null
+                        ? cashFlow.getTransactionType().getName()
+                        : null,
                 cashFlow.getCategory() != null ? cashFlow.getCategory().getName() : null,
                 cashFlow.getAccountType() != null ? cashFlow.getAccountType().getName() : null,
                 cashFlow.getBusinessUnit() != null ? cashFlow.getBusinessUnit().getName() : null,

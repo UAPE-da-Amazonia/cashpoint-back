@@ -12,7 +12,9 @@ public record AccountTypeResponse(List<AccountTypeData> accountTypes) {
             this(
                     accountType.getId(),
                     accountType.getName(),
-                    accountType.getBusinessUnit() != null ? accountType.getBusinessUnit().getName() : null);
+                    accountType.getBusinessUnit() != null
+                            ? accountType.getBusinessUnit().getName()
+                            : null);
         }
     }
 

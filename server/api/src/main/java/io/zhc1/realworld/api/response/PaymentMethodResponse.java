@@ -14,7 +14,9 @@ public record PaymentMethodResponse(List<PaymentMethodData> paymentMethods) {
                     paymentMethod.getId(),
                     paymentMethod.getName(),
                     paymentMethod.getDescription(),
-                    paymentMethod.getBusinessUnit() != null ? paymentMethod.getBusinessUnit().getName() : null,
+                    paymentMethod.getBusinessUnit() != null
+                            ? paymentMethod.getBusinessUnit().getName()
+                            : null,
                     paymentMethod.isActive());
         }
     }

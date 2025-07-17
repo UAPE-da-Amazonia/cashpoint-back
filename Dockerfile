@@ -1,29 +1,7 @@
-# Multi-stage build para otimizar o tamanho da imagem
-FROM eclipse-temurin:21-jdk-alpine AS builder
-
-# Instalar dependências necessárias
-RUN apk add --no-cache gradle
-
-# Definir diretório de trabalho
-WORKDIR /app
-
-# Copiar arquivos de configuração do Gradle
-COPY gradle/ gradle/
-COPY gradlew gradlew.bat build.gradle.kts settings.gradle.kts gradle.properties ./
-
-# Baixar dependências (cache layer)
-RUN ./gradlew dependencies --no-daemon
-
-# Copiar código fonte
-COPY . .
-
-# Build da aplicação
-RUN ./gradlew build
-
-# Imagem de produção
+# Imagem base mais simples
 FROM eclipse-temurin:21-jre-alpine
 
-# Instalar dependências de runtime
+# Instalar dependências necessárias
 RUN apk add --no-cache tzdata
 
 # Definir timezone
@@ -36,8 +14,8 @@ RUN addgroup -g 1001 -S appgroup && \
 # Definir diretório de trabalho
 WORKDIR /app
 
-# Copiar JAR da aplicação
-COPY --from=builder /app/server/api/build/libs/*.jar app.jar
+# Copiar apenas o JAR da aplicação (assumindo que foi buildado localmente)
+COPY server/api/build/libs/*.jar app.jar
 
 # Mudar propriedade do arquivo
 RUN chown appuser:appgroup app.jar
