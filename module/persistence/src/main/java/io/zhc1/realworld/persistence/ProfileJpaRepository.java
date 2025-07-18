@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Repository;
 
 import io.zhc1.realworld.model.BusinessUnit;
@@ -14,10 +15,13 @@ import io.zhc1.realworld.model.ProfileType;
 @Repository
 public interface ProfileJpaRepository extends JpaRepository<Profile, Integer> {
 
+    @EntityGraph(attributePaths = "businessUnit")
     List<Profile> findByBusinessUnit(BusinessUnit businessUnit);
 
+    @EntityGraph(attributePaths = "businessUnit")
     List<Profile> findByBusinessUnitAndProfileType(BusinessUnit businessUnit, ProfileType profileType);
 
+    @EntityGraph(attributePaths = "businessUnit")
     List<Profile> findByBusinessUnitAndIsActive(BusinessUnit businessUnit, boolean isActive);
 
     @Query(
