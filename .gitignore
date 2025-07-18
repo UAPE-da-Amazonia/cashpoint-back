@@ -36,3 +36,10 @@ out/
 ### VS Code ###
 .vscode/
 /org.gradle.api.internal*
+
+# Chaves privadas/públicas
+server/api/src/main/resources/app.key
+server/api/src/main/resources/app.pub
+
+# variaveis de ambiente
+.env

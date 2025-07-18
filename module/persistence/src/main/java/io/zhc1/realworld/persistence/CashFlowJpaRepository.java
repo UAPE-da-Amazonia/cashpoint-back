@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
+import org.springframework.lang.NonNull;
 import io.zhc1.realworld.model.BusinessUnit;
 import io.zhc1.realworld.model.CashFlow;
 import io.zhc1.realworld.model.Category;
@@ -18,7 +18,8 @@ interface CashFlowJpaRepository extends JpaRepository<CashFlow, Integer> {
 
     @EntityGraph(
             attributePaths = {"paymentMethod", "transactionType", "category", "accountType", "businessUnit", "profile"})
-    Optional<CashFlow> findById(Integer id);
+    @NonNull
+    Optional<CashFlow> findById(@NonNull Integer id);
 
     @EntityGraph(
             attributePaths = {"paymentMethod", "transactionType", "category", "accountType", "businessUnit", "profile"})

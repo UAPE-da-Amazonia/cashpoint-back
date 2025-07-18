@@ -30,12 +30,8 @@ services:
     restart: unless-stopped
     ports:
       - "8082:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/wai
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 1234Davi.
-      JAVA_OPTS: "-Xmx512m -Xms256m"
+    env_file:
+      - .env
     depends_on:
       mysql:
         condition: service_healthy

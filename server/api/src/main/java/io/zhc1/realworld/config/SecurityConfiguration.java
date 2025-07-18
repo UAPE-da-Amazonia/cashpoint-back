@@ -39,9 +39,11 @@ class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        requests -> requests.requestMatchers(HttpMethod.POST, "/api/users", "/api/users/login")
+                        requests -> requests
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/users", "/api/users/login")
                                 .permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/profiles/{username}", "/api/businessunit")
+                                .requestMatchers(HttpMethod.GET, "/api/profiles/{username}")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator/health/**")
                                 .permitAll()
@@ -65,17 +67,29 @@ class SecurityConfiguration {
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        /* Note: Allowing everything like this is not the correct way, so never do this in a practical environment. */
-
-        var configuration = new CorsConfiguration();
-
+        CorsConfiguration configuration = new CorsConfiguration();
+        
+        // Permitir todas as origens
         configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        
+        // Permitir todos os métodos HTTP
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"));
+        
+        // Permitir todos os headers
         configuration.setAllowedHeaders(List.of("*"));
-
-        var source = new UrlBasedCorsConfigurationSource();
+        
+        // Permitir credenciais
+        configuration.setAllowCredentials(true);
+        
+        // Expor headers específicos
+        configuration.setExposedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
+        
+        // Configurar tempo de cache para preflight requests
+        configuration.setMaxAge(3600L);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-
+        
         return source;
     }
 

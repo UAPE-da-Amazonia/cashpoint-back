@@ -28,11 +28,6 @@ class BusinessUnitController {
 
     @GetMapping
     BusinessUnitResponse getAllBusinessUnitResponse(AuthToken authToken) {
-        // Se não há token, retorna todas as unidades (endpoint público)
-        if (authToken == null) {
-            return new BusinessUnitResponse(businessUnitService.getAllBusinessUnits());
-        }
-
         // ADMIN pode ver todas as unidades, USER só vê a sua
         if (authToken.isAdmin()) {
             return new BusinessUnitResponse(businessUnitService.getAllBusinessUnits());

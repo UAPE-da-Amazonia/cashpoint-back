@@ -20,6 +20,7 @@ import io.zhc1.realworld.api.request.CreateProfileRequest;
 import io.zhc1.realworld.api.request.UpdateProfileRequest;
 import io.zhc1.realworld.api.response.ProfileResponse;
 import io.zhc1.realworld.api.response.ProfilesResponse;
+import io.zhc1.realworld.config.AuthToken;
 import io.zhc1.realworld.model.Profile;
 import io.zhc1.realworld.model.ProfileType;
 import io.zhc1.realworld.service.ProfileService;
@@ -32,7 +33,7 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping
-    public ResponseEntity<ProfileResponse> createProfile(@RequestBody CreateProfileRequest request) {
+    public ResponseEntity<ProfileResponse> createProfile(AuthToken authToken, @RequestBody CreateProfileRequest request) {
         ProfileType profileType = ProfileType.valueOf(request.profileType().toUpperCase());
 
         Profile profile = profileService.createProfile(
@@ -48,7 +49,7 @@ public class ProfileController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProfileResponse> getProfile(@PathVariable Integer id) {
+    public ResponseEntity<ProfileResponse> getProfile(AuthToken authToken, @PathVariable Integer id) {
         Profile profile =
                 profileService.findById(id).orElseThrow(() -> new IllegalArgumentException("Profile not found"));
 
@@ -56,7 +57,7 @@ public class ProfileController {
     }
 
     @GetMapping
-    public ResponseEntity<ProfilesResponse> getProfiles(
+    public ResponseEntity<ProfilesResponse> getProfiles(AuthToken authToken,
             @RequestParam(defaultValue = "1") Long businessUnitId,
             @RequestParam(required = false) String profileType,
             @RequestParam(required = false) String search) {
@@ -76,7 +77,7 @@ public class ProfileController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProfileResponse> updateProfile(
+    public ResponseEntity<ProfileResponse> updateProfile(AuthToken authToken,
             @PathVariable Integer id, @RequestBody UpdateProfileRequest request) {
 
         ProfileType profileType = null;
@@ -97,13 +98,13 @@ public class ProfileController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProfile(@PathVariable Integer id) {
+    public ResponseEntity<Void> deleteProfile(AuthToken authToken, @PathVariable Integer id) {
         profileService.deleteProfile(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/activate")
-    public ResponseEntity<ProfileResponse> activateProfile(@PathVariable Integer id) {
+    public ResponseEntity<ProfileResponse> activateProfile(AuthToken authToken, @PathVariable Integer id) {
         profileService.activateProfile(id);
         Profile profile =
                 profileService.findById(id).orElseThrow(() -> new IllegalArgumentException("Profile not found"));
@@ -112,7 +113,7 @@ public class ProfileController {
     }
 
     @PutMapping("/{id}/deactivate")
-    public ResponseEntity<ProfileResponse> deactivateProfile(@PathVariable Integer id) {
+    public ResponseEntity<ProfileResponse> deactivateProfile(AuthToken authToken, @PathVariable Integer id) {
         profileService.deactivateProfile(id);
         Profile profile =
                 profileService.findById(id).orElseThrow(() -> new IllegalArgumentException("Profile not found"));

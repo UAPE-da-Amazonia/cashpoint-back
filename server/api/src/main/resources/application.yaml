@@ -4,28 +4,31 @@ logging:
 
 security:
   key:
-    private: classpath:app.key
-    public: classpath:app.pub
+    private: ${SECURITY_KEY_PRIVATE:classpath:app.key}
+    public: ${SECURITY_KEY_PUBLIC:classpath:app.pub}
 
 spring:
   threads:
     virtual:
       enabled: true
   datasource:
-    url: jdbc:mysql://localhost:3306/wai
-    username: root
-    password: 1234Davi.
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/wai}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:1234Davi.}er
 
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update} # Em produção, use validate ou none e controle migrações com Flyway/Liquibase
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
+
+# Para produção, restrinja o CORS no SecurityConfiguration
+# Exemplo:
+# configuration.setAllowedOriginPatterns(List.of("https://seu-dominio.com"));
 
 decorator:
   datasource:
