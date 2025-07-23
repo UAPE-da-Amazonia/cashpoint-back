@@ -38,19 +38,18 @@ class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        requests -> requests
-                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/users", "/api/users/login")
-                                .permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/profiles/{username}")
-                                .permitAll()
-                                .requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator/health/**")
-                                .permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/users")
-                                .authenticated()
-                                .anyRequest()
-                                .authenticated())
+                .authorizeHttpRequests(requests -> requests.requestMatchers(HttpMethod.OPTIONS, "/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users", "/api/users/login")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/profiles/{username}")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator/health/**")
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users")
+                        .authenticated()
+                        .anyRequest()
+                        .authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         /* Note: Customization to make the code more expressive and to meet real-world requirements.
                          *       In the case of 'RealWorldBearerTokenResolver', it is possible to register it as a Spring Bean using @Component, etc., but here it was registered explicitly.
@@ -68,28 +67,28 @@ class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
+
         // Permitir todas as origens
         configuration.setAllowedOriginPatterns(List.of("*"));
-        
+
         // Permitir todos os métodos HTTP
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"));
-        
+
         // Permitir todos os headers
         configuration.setAllowedHeaders(List.of("*"));
-        
+
         // Permitir credenciais
         configuration.setAllowCredentials(true);
-        
+
         // Expor headers específicos
         configuration.setExposedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
-        
+
         // Configurar tempo de cache para preflight requests
         configuration.setMaxAge(3600L);
-        
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        
+
         return source;
     }
 

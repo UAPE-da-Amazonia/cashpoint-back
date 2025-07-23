@@ -1,6 +1,7 @@
 package io.zhc1.realworld.api;
 
-import io.zhc1.realworld.config.AuthToken;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
+import io.zhc1.realworld.config.AuthToken;
 
 @RestController
 @RequestMapping("/api/test")
@@ -30,11 +31,11 @@ public class TestController {
     }
 
     @PostMapping("/cors")
-    public ResponseEntity<Map<String, String>> testCorsPost(AuthToken authToken, @RequestBody Map<String, Object> request) {
+    public ResponseEntity<Map<String, String>> testCorsPost(
+            AuthToken authToken, @RequestBody Map<String, Object> request) {
         return ResponseEntity.ok(Map.of(
-            "message", "CORS POST is working!", 
-            "status", "success",
-            "received", request.toString()
-        ));
+                "message", "CORS POST is working!",
+                "status", "success",
+                "received", request.toString()));
     }
 }

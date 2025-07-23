@@ -1,8 +1,8 @@
-rootProject.name = "realworld"
+rootProject.name = "uape"
 
 // Include the library modules
 include(":module:core", ":module:persistence")
 
 // Include the server module
-include(":realworld")
-project(":realworld").projectDir = file("server/api")
+include(":uape")
+project(":uape").projectDir = file("server/api")

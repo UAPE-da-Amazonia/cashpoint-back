@@ -33,7 +33,8 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping
-    public ResponseEntity<ProfileResponse> createProfile(AuthToken authToken, @RequestBody CreateProfileRequest request) {
+    public ResponseEntity<ProfileResponse> createProfile(
+            AuthToken authToken, @RequestBody CreateProfileRequest request) {
         ProfileType profileType = ProfileType.valueOf(request.profileType().toUpperCase());
 
         Profile profile = profileService.createProfile(
@@ -57,7 +58,8 @@ public class ProfileController {
     }
 
     @GetMapping
-    public ResponseEntity<ProfilesResponse> getProfiles(AuthToken authToken,
+    public ResponseEntity<ProfilesResponse> getProfiles(
+            AuthToken authToken,
             @RequestParam(defaultValue = "1") Long businessUnitId,
             @RequestParam(required = false) String profileType,
             @RequestParam(required = false) String search) {
@@ -77,8 +79,8 @@ public class ProfileController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProfileResponse> updateProfile(AuthToken authToken,
-            @PathVariable Integer id, @RequestBody UpdateProfileRequest request) {
+    public ResponseEntity<ProfileResponse> updateProfile(
+            AuthToken authToken, @PathVariable Integer id, @RequestBody UpdateProfileRequest request) {
 
         ProfileType profileType = null;
         if (request.profileType() != null) {
