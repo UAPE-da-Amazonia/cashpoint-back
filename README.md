@@ -46,7 +46,7 @@ mysql -u root -p wai < module/persistence/src/main/resources/schema-mysql.sql
 
 ### Executar a aplicação
 ```bash
-./gradlew :realworld:bootRun
+./gradlew :uape:bootRun
 ```
 
 ### Executar testes
