@@ -1,16 +1,16 @@
 version: '3.8'
 
 services:
-  # Banco de dados MySQL
   mysql:
     image: mysql:8.0
     container_name: wai-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: wai
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      # Só defina MYSQL_USER e MYSQL_PASSWORD se quiser criar um usuário comum
+      # MYSQL_USER: ${MYSQL_USER}
+      # MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3308:3306"
     volumes:
@@ -23,7 +23,6 @@ services:
       timeout: 20s
       retries: 10
 
-  # Aplicação Spring Boot
   api:
     build:
       context: .
@@ -45,15 +44,13 @@ services:
       start_period: 60s
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/wai
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER:-root}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-${MYSQL_ROOT_PASSWORD}}
 
 volumes:
   mysql_data:
     driver: local
-  redis_data:
-    driver: local
 
 networks:
   wai-network:
-    driver: bridge 
+    driver: bridge
