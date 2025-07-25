@@ -6,8 +6,9 @@ services:
     container_name: wai-mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_ROOT_PASSWORD: Info@1234
       MYSQL_DATABASE: wai
+      MYSQL_USER: root
       # Só defina MYSQL_USER e MYSQL_PASSWORD se quiser criar um usuário comum
       # MYSQL_USER: ${MYSQL_USER}
       # MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -44,8 +45,8 @@ services:
       start_period: 60s
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/wai
-      - MYSQL_USER=${MYSQL_USER:-root}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-${MYSQL_ROOT_PASSWORD}}
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=Info@1234
 
 volumes:
   mysql_data:
