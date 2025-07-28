@@ -52,7 +52,9 @@ public class UserService {
         }
 
         var requester = new User(registry);
-        requester.encryptPassword(passwordEncoder, registry.password());
+        if (registry.password() != null && !registry.password().isBlank()) {
+            requester.encryptPassword(passwordEncoder, registry.password());
+        }
 
         return userRepository.save(requester);
     }
@@ -76,6 +78,107 @@ public class UserService {
                 .findByEmail(email)
                 .filter(user -> passwordEncoder.matches(password, user.getPassword()))
                 .orElseThrow(() -> new IllegalArgumentException("invalid email or password."));
+    }
+
+    /**
+     * Process OAuth login or registration.
+     *
+     * @param email user's email from OAuth provider
+     * @param name user's name from OAuth provider
+     * @param provider OAuth provider name (e.g., "google")
+     * @param providerId unique ID from OAuth provider
+     * @param imageUrl user's profile image from OAuth provider
+     * @param businessUnit user's business unit
+     * @return Returns the logged-in or newly registered user
+     */
+    public User processOAuthLogin(
+            String email, String name, String provider, String providerId, String imageUrl, BusinessUnit businessUnit) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("email is required.");
+        }
+        if (provider == null || provider.isBlank()) {
+            throw new IllegalArgumentException("provider is required.");
+        }
+        if (providerId == null || providerId.isBlank()) {
+            throw new IllegalArgumentException("providerId is required.");
+        }
+        if (businessUnit == null) {
+            throw new IllegalArgumentException("businessUnit is required.");
+        }
+
+        // First, try to find user by provider and providerId
+        var existingUser = userRepository.findByProviderAndProviderId(provider, providerId);
+        if (existingUser.isPresent()) {
+            var user = existingUser.get();
+            // Update user information if needed
+            if (imageUrl != null && !imageUrl.isBlank()) {
+                user.setImageUrl(imageUrl);
+            }
+            if (name != null && !name.isBlank() && !name.equals(user.getName())) {
+                user.setName(name);
+            }
+            return userRepository.save(user);
+        }
+
+        // If not found by provider, try to find by email within the same business unit
+        var userByEmail = userRepository.findByEmail(email);
+        if (userByEmail.isPresent()) {
+            var user = userByEmail.get();
+
+            // Check if user is in the same business unit
+            if (!user.getBusinessUnit().getId().equals(businessUnit.getId())) {
+                throw new IllegalArgumentException("User already exists in a different business unit.");
+            }
+
+            // Update existing user with OAuth information
+            user.setProvider(provider);
+            user.setProviderId(providerId);
+            if (imageUrl != null && !imageUrl.isBlank()) {
+                user.setImageUrl(imageUrl);
+            }
+            if (name != null && !name.isBlank() && !name.equals(user.getName())) {
+                user.setName(name);
+            }
+            return userRepository.save(user);
+        }
+
+        // Create new user with OAuth information
+        var username = generateUsernameFromEmail(email);
+        var registry = new UserRegistry(
+                name,
+                email,
+                username,
+                null, // No password for OAuth users
+                businessUnit,
+                UserRole.USER,
+                provider,
+                providerId);
+
+        var newUser = new User(registry);
+        if (imageUrl != null && !imageUrl.isBlank()) {
+            newUser.setImageUrl(imageUrl);
+        }
+
+        return userRepository.save(newUser);
+    }
+
+    /**
+     * Generate a unique username from email.
+     *
+     * @param email user's email
+     * @return Returns a unique username
+     */
+    private String generateUsernameFromEmail(String email) {
+        String baseUsername = email.split("@")[0];
+        String username = baseUsername;
+        int counter = 1;
+
+        while (userRepository.existsByUsername(username)) {
+            username = baseUsername + counter;
+            counter++;
+        }
+
+        return username;
     }
 
     /**

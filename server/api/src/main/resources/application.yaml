@@ -26,6 +26,17 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:your-google-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:your-google-client-secret}
+            scope:
+              - email
+              - profile
+
 # Para produção, restrinja o CORS no SecurityConfiguration
 # Exemplo:
 # configuration.setAllowedOriginPatterns(List.of("https://seu-dominio.com"));
@@ -33,4 +44,5 @@ spring:
 decorator:
   datasource:
     p6spy:
-      enable-logging: true
+      multiline: true
+      logging: slf4j

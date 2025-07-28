@@ -55,7 +55,10 @@ class UserController {
                 request.user().username(),
                 request.user().password(),
                 businessUnit,
-                role);
+                role,
+                null, // provider
+                null // providerId
+                );
 
         User user = userService.signup(userRegistry);
         String token = bearerTokenProvider.createAuthToken(user);

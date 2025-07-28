@@ -14,11 +14,17 @@ interface UserJpaRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByUsername(String username);
 
+    Optional<User> findByProviderAndProviderId(String provider, String providerId);
+
+    Optional<User> findByEmailAndProvider(String email, String provider);
+
     boolean existsByEmail(String email);
 
     boolean existsByUsername(String username);
 
     boolean existsByEmailOrUsername(String email, String username);
+
+    boolean existsByProviderAndProviderId(String provider, String providerId);
 
     List<User> findByBusinessUnit(BusinessUnit businessUnit);
 }

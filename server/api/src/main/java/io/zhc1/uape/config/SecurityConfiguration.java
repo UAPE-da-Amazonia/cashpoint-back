@@ -42,6 +42,8 @@ class SecurityConfiguration {
                         .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users", "/api/users/login")
                         .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/oauth/google/login")
+                        .permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/profiles/{username}")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/health", "/actuator/health/**")

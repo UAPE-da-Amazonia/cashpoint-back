@@ -41,6 +41,16 @@ class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByProviderAndProviderId(String provider, String providerId) {
+        return userJpaRepository.findByProviderAndProviderId(provider, providerId);
+    }
+
+    @Override
+    public Optional<User> findByEmailAndProvider(String email, String provider) {
+        return userJpaRepository.findByEmailAndProvider(email, provider);
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
         return userJpaRepository.existsByEmail(email);
     }
@@ -53,6 +63,11 @@ class UserRepositoryAdapter implements UserRepository {
     @Override
     public boolean existsBy(String email, String username) {
         return userJpaRepository.existsByEmailOrUsername(email, username);
+    }
+
+    @Override
+    public boolean existsByProviderAndProviderId(String provider, String providerId) {
+        return userJpaRepository.existsByProviderAndProviderId(provider, providerId);
     }
 
     @Override

@@ -40,7 +40,7 @@ public class User {
     @Column(length = 30, nullable = false, unique = true)
     private String username;
 
-    @Column(length = 200, nullable = false)
+    @Column(length = 200)
     private String password;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -57,6 +57,12 @@ public class User {
     @Column(length = 200)
     private String imageUrl;
 
+    @Column(length = 50)
+    private String provider;
+
+    @Column(length = 100)
+    private String providerId;
+
     @Column(nullable = false, updatable = false)
     private final LocalDateTime createdAt = LocalDateTime.now();
 
@@ -67,10 +73,24 @@ public class User {
                 registry.username(),
                 registry.password(),
                 registry.businessUnit(),
-                registry.role());
+                registry.role(),
+                registry.provider(),
+                registry.providerId());
     }
 
     public User(String name, String email, String username, String password, BusinessUnit businessUnit, UserRole role) {
+        this(name, email, username, password, businessUnit, role, null, null);
+    }
+
+    public User(
+            String name,
+            String email,
+            String username,
+            String password,
+            BusinessUnit businessUnit,
+            UserRole role,
+            String provider,
+            String providerId) {
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("name must not be null or blank.");
         }
@@ -79,9 +99,6 @@ public class User {
         }
         if (username == null || username.isBlank()) {
             throw new IllegalArgumentException("username must not be null or blank.");
-        }
-        if (password == null || password.isBlank()) {
-            throw new IllegalArgumentException("password must not be null or blank.");
         }
         if (businessUnit == null) {
             throw new IllegalArgumentException("businessUnit must not be null.");
@@ -96,6 +113,8 @@ public class User {
         this.password = password;
         this.businessUnit = businessUnit;
         this.role = role;
+        this.provider = provider;
+        this.providerId = providerId;
     }
 
     public boolean equalsEmail(String email) {
@@ -104,6 +123,10 @@ public class User {
 
     public boolean equalsUsername(String username) {
         return this.username.equals(username);
+    }
+
+    public boolean isOAuthUser() {
+        return provider != null && !provider.isBlank();
     }
 
     public void setName(String name) {
@@ -185,6 +208,14 @@ public class User {
         }
 
         this.imageUrl = imageUrl;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
     @Override

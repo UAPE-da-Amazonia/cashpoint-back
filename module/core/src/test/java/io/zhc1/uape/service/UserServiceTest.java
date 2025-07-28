@@ -96,8 +96,8 @@ class UserServiceTest {
     @DisplayName("Signup should throw exception when user already exists")
     void whenSignupWithExistingUser_thenShouldThrowException() {
         // given
-        UserRegistry testRegistry =
-                new UserRegistry("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
+        UserRegistry testRegistry = new UserRegistry(
+                "Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE, null, null);
         when(userRepository.existsBy(testRegistry.email(), testRegistry.username()))
                 .thenReturn(true);
 
@@ -109,8 +109,8 @@ class UserServiceTest {
     @DisplayName("Signup should succeed with valid user information")
     void whenSignupWithValidUserInfo_thenShouldSucceed() {
         // given
-        UserRegistry testRegistry =
-                new UserRegistry("Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE);
+        UserRegistry testRegistry = new UserRegistry(
+                "Test Name", "email", "username", "password", DEFAULT_BUSINESS_UNIT, DEFAULT_ROLE, null, null);
         when(userRepository.existsBy(testRegistry.email(), testRegistry.username()))
                 .thenReturn(false);
 
