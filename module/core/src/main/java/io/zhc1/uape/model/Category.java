@@ -28,11 +28,11 @@ public class Category {
     @Column(length = 100, nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "transaction_type_id", nullable = false)
     private TransactionType transactionType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "business_unit_id", nullable = false)
     private BusinessUnit businessUnit;
 

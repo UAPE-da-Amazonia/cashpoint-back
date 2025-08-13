@@ -39,7 +39,7 @@ class TransactionTypeController {
         return new TransactionTypeResponse(transactionType);
     }
 
-    /** POST /api/transaction-types - Criar novo tipo de transação */
+    /** POST /api/transaption-types - Criar novo tipo de transação */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     TransactionTypeResponse createTransactionType(@RequestBody TransactionTypeRequest request) {

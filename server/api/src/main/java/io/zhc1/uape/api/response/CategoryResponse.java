@@ -7,7 +7,8 @@ import io.zhc1.uape.model.Category;
 
 public record CategoryResponse(List<CategoryData> categories) {
 
-    public record CategoryData(Integer id, String name, String transactionTypeName, String businessUnitName) {
+    public record CategoryData(
+            Integer id, String name, String transactionTypeName, Integer transactionTypeId, String businessUnitName) {
         public CategoryData(Category category) {
             this(
                     category.getId(),
@@ -15,6 +16,7 @@ public record CategoryResponse(List<CategoryData> categories) {
                     category.getTransactionType() != null
                             ? category.getTransactionType().getName()
                             : null,
+                    category.getTransactionTypeId(),
                     category.getBusinessUnit() != null
                             ? category.getBusinessUnit().getName()
                             : null);
