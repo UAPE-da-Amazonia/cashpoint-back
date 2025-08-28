@@ -7,6 +7,7 @@ import io.zhc1.uape.model.User;
 public record UsersResponse(List<UserResponse> users) {
     public static UsersResponse from(User user, String token) {
         UserResponse userResponse = new UserResponse(
+                user.getId(),
                 user.getName(),
                 user.getEmail(),
                 token,
@@ -21,6 +22,7 @@ public record UsersResponse(List<UserResponse> users) {
     public static UsersResponse from(List<User> users) {
         List<UserResponse> userResponses = users.stream()
                 .map(user -> new UserResponse(
+                        user.getId(),
                         user.getName(),
                         user.getEmail(),
                         null, // token não é necessário para listagem
