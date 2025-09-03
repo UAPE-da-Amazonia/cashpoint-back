@@ -1,9 +1,9 @@
 package io.zhc1.uape.api.response;
 
+import java.util.UUID;
+
 import io.zhc1.uape.model.BusinessUnit;
 import io.zhc1.uape.model.User;
-
-import java.util.UUID;
 
 public record UserResponse(
         UUID id,

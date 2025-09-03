@@ -32,7 +32,7 @@ class BusinessUnitController {
         if (authToken.isAdmin()) {
             return new BusinessUnitResponse(businessUnitService.getAllBusinessUnits());
         } else {
-            // USER só vê sua própria unidade
+            // USER só vê a sua própria unidade
             BusinessUnit userBusinessUnit = businessUnitService
                     .findById(authToken.businessUnitId())
                     .orElseThrow(() -> new RuntimeException("BusinessUnit não encontrada"));
